@@ -1,0 +1,48 @@
+﻿<head>
+	<link href="~/css/LoginAndRegister.css" rel="stylesheet" />
+	<title>Sign Up</title>
+</head>
+@model Messenger.models.RegisterModel
+
+<main id="Register-Main">
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data", @class = "Form" }))
+    {
+        <div id="Register-Container">
+            @Html.ValidationSummary()
+            <div class="validation-errors">
+                @if (ViewBag.Error != null)
+                {
+                    <p class="Error-Register">@ViewBag.Error</p>
+                }
+            </div>         
+            <p class="Register-Paragraph">
+                <span>Username</span>
+                <br />
+                @Html.TextBoxFor(x => x.UserName, new { @class = "Register-Input" })
+            </p>
+            <p class="Register-paragraph">
+                <span>Email Adress</span>
+                <br />
+                @Html.TextBoxFor(x => x.EmailAdress, new { @class = "Register-Input" })
+            </p>
+            <p class="Register-paragraph">
+                <span>Password</span>
+                <br />
+                @Html.PasswordFor(x => x.Password, new { @class = "Register-Input" })
+            </p>
+            <p class="Register-paragraphFiles">
+                <input class="CustomFiles" type="file" id="CustomFiles" name="ProfileImage" />
+                <label id="CustomFile-Label" for="CustomFiles">Choose Photo</label>
+            </p>
+            <button id="Button-Register" type="submit">SIGN UP</button>
+           
+        </div>
+    }
+
+	
+	
+	<div class="RedirectDiv">
+		<h3>If you have account </h3>
+		@Html.ActionLink("LOGIN", "Login", "Account", null, new { @class = "Button-Redirect" })
+	</div>
+</main>

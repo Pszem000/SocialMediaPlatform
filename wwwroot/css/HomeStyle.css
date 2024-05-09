@@ -1,0 +1,161 @@
+﻿* {
+    margin: 0px;
+    color: Window;
+    text-align:center;
+}
+
+#FrirendsOnline, #UserSettings, .Home-Form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.Home-Form {
+    margin: 50px 0px;
+    background-color: rgb(51,51,51);
+    border-radius: 15px;
+    padding: 10px 0px;
+}
+
+#LastetMessages, #FrirendsOnline, #UserSettings {
+    width: 20%;
+    height: 100vh;
+    float: left;
+    padding-top: 50px;
+    overflow: auto;
+}
+
+#UserSettings {
+    background-image: linear-gradient(rgb(77, 77, 77),rgb(51, 51, 51));
+}
+
+#LastetMessages, #FrirendsOnline {
+    background-image: linear-gradient(rgb(64, 64, 64),rgb(38, 38, 38) );
+}
+
+.UserList-PhotoWithNotification {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    float: left;
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+}
+
+
+#LastetMessages, .pickuser {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.pickuser {
+    float: left;
+    width: 40%;
+    padding-top: 50px;
+    overflow: auto;
+    height: 100vh;
+    background-image: linear-gradient(rgb(64, 64, 64),rgb(38, 38, 38) );
+}
+
+#ButtonSearch {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 10px;
+    align-self: center;
+    display: table;
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.UserList-Photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    float: left;
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    margin-right: 25px;
+}
+
+.UserList-PhotoContainer {
+    position: relative;
+    float: left;
+    margin-left: 70px;
+}
+
+.FindUser-PhotoContainer {
+    position: relative;
+    float: left;
+    margin-left: 300px;
+}
+
+.UnreadMessagesNotification {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    line-height: 25px;
+    text-align: center;
+    border-radius: 100%;
+    position: relative;
+    bottom: 5px;
+    right: 15px;
+    font-size: 12px;
+    z-index: 1;
+    background-color: rgb(115,115,115);
+    color: white;
+}
+
+.UserList-User {
+    margin: 10px;
+    float: left;
+}
+
+.Button-Redirect, .UserList-Button {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: table;
+    text-align: center;
+    float: left;
+}
+
+
+.input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  
+}
+
+input[type="text"] {
+    background-color: rgb(179, 179, 179);
+    margin: 0px;
+    width: 100%;
+}
+
+input[type="password"] {
+    background-color: rgb(179, 179, 179);
+    margin: 0px;
+    width: 100%;
+}
+
+.ChangePassword-Span {
+    width: 80%;
+}
+.InputSearch {
+    padding: 2px;
+    margin: 10px 0px;
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+}

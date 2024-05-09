@@ -1,0 +1,256 @@
+﻿﻿
+@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+@implements IAsyncDisposable
+
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.SignalR
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Messenger.Services
+@using Messenger.Services.Interfaces;
+@using Messenger.models;
+@using Microsoft.EntityFrameworkCore;
+
+@inject NavigationManager Navigation
+@inject UserManager<UserModel> _userManager
+@inject IUserGetter _UserGetter
+@inject IMessageGetter _MessageGetter
+@inject IEmailSender _EmailSender
+@inject SignInManager<UserModel> _SignInManager
+
+<link href="css/HomeStyle.css" rel="stylesheet">
+<PageTitle>Home</PageTitle>
+
+@if (LoggedUser != null)
+{
+	<div id="UserSettings">
+		<h1>@LoggedUser.UserName</h1>
+		<form action="/Account/LogOut" method="get">
+			<button class="UserList-Button" @onclick="@(() => LogOut())">LogOut</button>
+		</form>
+
+		<form action="/Password/ChangePasswordByPassword" method="post" class="Home-Form">
+			<input type="hidden" value="@LoggedUser.Id" name="UserId"/>
+			<h3>CHANGE PASSWORD</h3>
+			<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
+			<br />
+			<span class="ChangePassword-Span">New password<input class="InputSearch" name="NewPassword" type="password" /></span>
+			<br />
+			<button class="UserList-Button" type="submit">Change Password</button>
+
+		</form>
+		<form action="/Username/ChangeUsername" method="post" class="Home-Form">
+			<input type="hidden" value="@LoggedUser.Id" name="UserId" />
+			<h3>CHANGE USERNAME</h3>
+			<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
+			<br />
+			<span class="ChangePassword-Span">New username<input class="InputSearch" name="NewUsername" type="text" /></span>
+			<br />
+			<button class="UserList-Button" type="submit">Change Username</button>
+
+		</form>
+	</div>
+	<div id="LastetMessages">
+		<h2>Lastet messages</h2>
+		@if (UserList != null && UserList.Count != 0)
+		{
+			@foreach (var User in UserList)
+			{
+				<div class="UserList-User">
+					<div class="UserList-PhotoContainer">
+						@if (UnreadMessageCounts.ContainsKey(User.Id) && UnreadMessageCounts[User.Id] != 0)
+						{
+							<span class="UnreadMessagesNotification">@UnreadMessageCounts[User.Id]</span>
+							<img class="UserList-PhotoWithNotification" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+						}
+						else
+						{
+							<img class="UserList-Photo" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+						}
+
+					</div>
+					@if (User.UserName.Length > 20)
+					{
+						<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName.Substring(0, 20)...</button>
+					}
+					else
+					{
+						<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName</button>
+					}
+
+				</div>
+			}
+		}
+	</div>
+	<div class="pickuser">
+		<h1>Find friends</h1>
+
+		<div class="input">
+			<input class="InputSearch" style="width:40%;" type="text" @bind="KeyWords" />
+			<button id="ButtonSearch" @onclick="@(() =>  GetUsers())">Find</button>
+		</div>
+
+		@if (Users != null && Users.Count != 0)
+		{
+			foreach (var User in Users)
+			{
+
+				if (User.Id != LoggedUser.Id)
+				{
+					<div class="UserList-User">
+						<div class="FindUser-PhotoContainer">
+							<img class="UserList-Photo UserPhoto" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+						</div>
+
+						@if (User.UserName.Length > 20)
+						{
+							<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName.Substring(0, 20)...</button>
+						}
+						else
+						{
+							<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName</button>
+						}
+
+					</div>
+				}
+			}
+
+		}
+
+	</div>
+	<div id="FrirendsOnline">
+		<h2>Your online friends</h2>
+		@if (OnlineFriendsList != null && OnlineFriendsList.Count != 0)
+		{
+			@foreach (var user in OnlineFriendsList)
+			{
+
+				<div class="UserList-User">
+					<img id="UserPhoto" class="UserList-Photo" src="@($"/DisplayImage/{user.ProfileImageId}")" />
+					<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{user.Id}"))">@user.UserName</button>
+				</div>
+			}
+		}
+	</div>
+
+}
+
+@code {
+	private string KeyWords = "";
+	private List<UserModel> Users;
+	private UserModel LoggedUser;
+	private List<UserModel> UserList = new List<UserModel>();
+	private List<UserModel> OnlineFriendsList = new List<UserModel>();
+	private HubConnection? _HubConnection;
+	private Dictionary<string, string> ConnectionsMap;
+	private Dictionary<string, int> UnreadMessageCounts = new Dictionary<string, int>();
+	protected override async Task OnInitializedAsync()
+	{
+
+		LoggedUser = await _UserGetter.GetLoggedUser();
+		if (LoggedUser == null)
+		{
+			RedirectToPage("/Account/Login");
+		}
+		else
+		{
+			UserList = await _UserGetter.GetUsers(LoggedUser.Id);
+			_HubConnection = new HubConnectionBuilder()
+			.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+			{
+				options.Headers["UserId"] = LoggedUser.Id;
+			})
+			.Build();
+
+			await _HubConnection.StartAsync();
+
+			await _HubConnection.InvokeAsync("JoinGroup", LoggedUser.Id);
+			_HubConnection.On("ChangeMessageNotification", async () =>
+			{
+
+				await ChangeMessageNotification();
+				UserList = await _UserGetter.GetUsers(LoggedUser.Id);
+				StateHasChanged();
+			});
+
+
+			await ChangeMessageNotification();
+			await GetOnlineFriends();
+
+		}
+
+
+	}
+	private void RedirectToPage(string Url)
+	{
+		Navigation.NavigateTo(Url, forceLoad: true);
+	}
+	public async Task GetUsers()
+	{
+		var Users = _userManager.Users.AsQueryable();
+
+		if (!string.IsNullOrEmpty(KeyWords))
+		{
+			Users = Users.Where(x => x.UserName.Contains(KeyWords));
+		}
+		this.Users = await Users.ToListAsync<global::Messenger.models.UserModel>();
+		if (this.Users.Contains(LoggedUser))
+		{
+			this.Users.Remove(LoggedUser);
+		}
+		StateHasChanged();
+	}
+	public async ValueTask DisposeAsync()
+	{
+		if (_HubConnection != null)
+		{
+			await _HubConnection.DisposeAsync();
+		}
+	}
+
+	public async Task GetOnlineFriends()
+	{
+		while (true)
+		{
+			ConnectionsMap = AppHub.ConnectionUserMap;
+
+			foreach (var User in UserList)
+			{
+
+				if (ConnectionsMap.ContainsValue(User.Id) && !OnlineFriendsList.Contains(User))
+				{
+					OnlineFriendsList.Add(User);
+				}
+				if (!ConnectionsMap.Values.Contains(User.Id) && OnlineFriendsList.Contains(User))
+				{
+					OnlineFriendsList.Remove(User);
+				}
+
+			}
+			StateHasChanged();
+			await Task.Delay(TimeSpan.FromSeconds(4));
+
+
+		}
+
+	}
+	private async Task<int> CountUnreadMessages(UserModel User)
+	{
+		var UnreadMessages = await _MessageGetter.GetMessages(LoggedUser.Id, User.Id);
+		UnreadMessages = UnreadMessages.Where(x => x.IsRead == false && x.CreatorId == User.Id).ToList();
+		return UnreadMessages.Count;
+	}
+	private async Task ChangeMessageNotification()
+	{
+		foreach (var user in UserList)
+		{
+			UnreadMessageCounts[user.Id] = await CountUnreadMessages(user);
+		}
+	}
+	private async Task LogOut()
+	{
+		await _SignInManager.SignOutAsync();
+	}
+}

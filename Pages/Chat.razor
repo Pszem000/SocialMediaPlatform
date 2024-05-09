@@ -1,0 +1,207 @@
+﻿@page "/chat/{ReciverIdForm}"
+@implements IAsyncDisposable
+
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.Security.Claims;
+@using System.Text;
+@using System.Security.Policy
+@using Messenger.Services.Interfaces;
+@using Messenger.Services;
+@using Messenger.models;
+
+@inject NavigationManager Navigation
+@inject AppDbContext _Context
+@inject IJSRuntime JSRuntime
+@inject IUserGetter _UserGetter
+@inject IMessageGetter _MessageGetter
+@inject IMessageService _MessageService
+
+<PageTitle>Chat</PageTitle>
+
+<link href="css/Chat.css" rel="stylesheet">
+
+@if (Receiver != null && User != null)
+{
+	<div id="ReciverInfo">
+		<div id="Home-Button-Container">
+			<button class="ButtonLayOut" @onclick="@(() => RedirectToPage("/"))">Main Page</button>
+		</div>
+		<div id="ImgAndUsername">
+			<img id="UserPhoto" src="@($"/DisplayImage/{Receiver.ProfileImageId}")" />
+			<h3 id="Username-Chat">@Receiver.UserName</h3>
+		</div>
+	</div>
+}
+
+
+<div id="MessageConatiner">
+</div>
+<div id="SendButton-Container">
+	<input id="InputChat" type="text" name="Message" @bind="MessageContent" />
+	<button id="SendButton" @onclick="() => SendMessage(MessageContent,Receiver.Id)">Send</button>
+</div>
+
+
+@code {
+	private string MessageContent { get; set; } = "";
+	[Parameter] public string ReciverIdForm { get; set; }
+	private HubConnection? _HubConnection;
+	private UserModel User;
+	private UserModel Receiver;
+	private List<MessageModel> MessageList;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Receiver = await _UserGetter.GetUserById(ReciverIdForm);
+		User = await _UserGetter.GetLoggedUser();
+		MessageList = await _MessageGetter.GetMessages(User.Id, Receiver.Id);
+		await ReadMessages();
+		await GenerateMessages();
+		_HubConnection = new HubConnectionBuilder()
+
+		.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+		{
+			options.Headers["UserId"] = User.Id;
+		})
+		.Build();
+		await _HubConnection.StartAsync();
+
+		_HubConnection.On<string, string>("ReciveNotification", async (Message, MessageId) =>
+			{
+				AddMessageToViewWithImageId(AddBreakLines(Message), "ReciverMessages", Receiver.ProfileImageId.ToString(), "ReciverImg", MessageId);
+
+				JSRuntime.InvokeVoidAsync("scrollToBottom");
+				await _HubConnection.InvokeAsync("ReadMessages", Receiver.Id);
+
+			});
+
+		_HubConnection.On("ReadMessages", async () =>
+			{
+
+				MessageList = await _MessageGetter.GetMessages(User.Id, Receiver.Id);
+				var UnReadMessages = MessageList.Where(x => x.ReciverId == Receiver.Id && x.IsRead == false).ToList();
+				foreach (var Message in UnReadMessages)
+				{
+					await JSRuntime.InvokeVoidAsync("ChangePhoto", Message.Id);
+					var CurrentMessage = await _Context.MessageList.FindAsync(Message.Id);
+					CurrentMessage.IsRead = true;
+					await _Context.SaveChangesAsync();
+				}
+			});
+
+		await _HubConnection.InvokeAsync("JoinGroup", User.Id);
+		await _HubConnection.InvokeAsync("ReadMessages", Receiver.Id);
+		await JSRuntime.InvokeVoidAsync("scrollToBottom");
+	}
+	private async Task ReadMessages()
+	{
+		MessageList = await _MessageGetter.GetMessages(User.Id, Receiver.Id);
+		var UnReadMessages = MessageList.Where(x => x.CreatorId == Receiver.Id && x.IsRead == false).ToList();
+		foreach (var message in UnReadMessages)
+		{
+			if (!message.IsRead)
+			{
+				message.IsRead = true;
+				var Message = await _Context.MessageList.FindAsync(message.Id);
+				Message.IsRead = true;
+				await _Context.SaveChangesAsync();
+			}
+		}
+
+	}
+	private async Task GenerateMessages()
+	{
+		MessageList = await _MessageGetter.GetMessages(User.Id, Receiver.Id);
+		if (MessageList != null)
+		{
+			foreach (var Message in MessageList)
+			{
+
+				if (Message.CreatorId == User.Id)
+				{
+					if (Message.IsRead)
+					{
+						AddMessageToViewWithImageURL(AddBreakLines(Message.Content), "CreatorMessages", "Icons/message-read.png", "CreatorImg", Message.Id.ToString()); 
+					}
+					else
+					{
+						AddMessageToViewWithImageURL(AddBreakLines(Message.Content), "CreatorMessages", "Icons/message-send.jpg", "CreatorImg", Message.Id.ToString());
+					}
+				}
+				else
+				{
+
+					AddMessageToViewWithImageId(AddBreakLines(Message.Content), "ReciverMessages", Receiver.ProfileImageId.ToString(), "ReciverImg", Message.Id.ToString());
+				}
+
+			}
+
+		}
+
+	}
+	public async ValueTask DisposeAsync()
+	{
+
+		if (_HubConnection != null)
+		{
+			await _HubConnection.StopAsync();
+			_HubConnection.DisposeAsync();
+		}
+	}
+	private async Task AddMessageToViewWithImageId(string MessageContent, string MessageClassName, string ProfileId, string ImgClassName, string MessageId)
+	{
+
+		await JSRuntime.InvokeVoidAsync("AddMessageToViewWithImageId", MessageContent, MessageClassName, ProfileId, ImgClassName, MessageId);
+	}
+	private async Task AddMessageToViewWithImageURL(string MessageContent, string MessageClassName, string ImageURL, string ImgClassName, string MessageId)
+	{
+
+		await JSRuntime.InvokeVoidAsync("AddMessageToViewWithImageURL", MessageContent, MessageClassName, ImageURL, ImgClassName, MessageId);
+	}
+	private async Task SendMessage(string MessageContent, string ReciverId)
+	{
+
+		if (!string.IsNullOrWhiteSpace(MessageContent) && MessageContent.Length < 512)
+		{
+
+			var MessageId = await _MessageService.AddMessage(MessageContent, ReciverId, User.Id);
+
+			this.MessageContent = "";
+			await _HubConnection.InvokeAsync("SendMessage", MessageContent, Receiver.Id, MessageId);
+
+			AddMessageToViewWithImageURL(AddBreakLines(MessageContent), "CreatorMessages", "Icons/message-send.jpg", "CreatorImg", MessageId);
+			await JSRuntime.InvokeVoidAsync("scrollToBottom");
+
+			await _HubConnection.InvokeAsync("ReadMessages", Receiver.Id);
+			await _HubConnection.InvokeAsync("ChangeMessageNotification", Receiver.Id);
+		}
+	}
+
+	private string AddBreakLines(string Message)
+	{
+		var MessageWithBreakLines = "";
+		StringBuilder OutPutText = new StringBuilder();
+		int Counter = 0;
+
+		foreach (char c in Message)
+		{
+			if (Counter >= 85)
+			{
+				OutPutText.Append("</br>");
+				Counter = 0;
+			}
+			OutPutText.Append(c);
+			Counter++;
+		}
+		MessageWithBreakLines = OutPutText.ToString();
+		return MessageWithBreakLines;
+	}
+
+
+	private void RedirectToPage(string Url)
+	{
+		Navigation.NavigateTo(Url, forceLoad: true);
+	}
+
+}
