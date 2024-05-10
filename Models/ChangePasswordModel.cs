@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.Models
+namespace SocialMediaPlatform.Models
 {
 	public class ChangePasswordModel
 	{

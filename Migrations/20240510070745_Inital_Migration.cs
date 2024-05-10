@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Messenger.Migrations
+namespace SocialMediaPlatform.Migrations
 {
-    public partial class migration1 : Migration
+    public partial class Inital_Migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,6 +83,8 @@ namespace Messenger.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProfileImageId = table.Column<int>(type: "int", nullable: true),
+                    IsOnline = table.Column<bool>(type: "bit", nullable: false),
+                    RecoveryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -124,7 +126,9 @@ namespace Messenger.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatorId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReciverId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ReciverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    SendTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,7 +145,7 @@ namespace Messenger.Migrations
                 name: "ImageList",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     image = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -151,7 +155,7 @@ namespace Messenger.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageList", x => x.id);
+                    table.PrimaryKey("PK_ImageList", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ImageList_MessageList_MessageId1",
                         column: x => x.MessageId1,

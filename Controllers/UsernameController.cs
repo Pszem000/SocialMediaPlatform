@@ -1,10 +1,11 @@
-﻿using Messenger.models;
-using Messenger.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Controllers
+namespace SocialMediaPlatform.Controllers
 {
 	public class UsernameController : Controller
 	{

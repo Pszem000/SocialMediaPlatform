@@ -1,17 +1,14 @@
 ﻿﻿
 @page "/"
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.EntityFrameworkCore
+@using SocialMediaPlatform.Models
+@using SocialMediaPlatform.Services.Interfaces
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 @implements IAsyncDisposable
 
-@using Microsoft.AspNetCore.Identity;
-@using Microsoft.AspNetCore.SignalR
-@using Microsoft.AspNetCore.SignalR.Client
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
-@using Messenger.Services
-@using Messenger.Services.Interfaces;
-@using Messenger.models;
-@using Microsoft.EntityFrameworkCore;
 
 @inject NavigationManager Navigation
 @inject UserManager<UserModel> _userManager
@@ -195,7 +192,7 @@
 		{
 			Users = Users.Where(x => x.UserName.Contains(KeyWords));
 		}
-		this.Users = await Users.ToListAsync<global::Messenger.models.UserModel>();
+		this.Users = await Users.ToListAsync<UserModel>();
 		if (this.Users.Contains(LoggedUser))
 		{
 			this.Users.Remove(LoggedUser);

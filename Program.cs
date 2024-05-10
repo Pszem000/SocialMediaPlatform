@@ -1,9 +1,9 @@
-using Messenger;
-using Messenger.models;
-using Messenger.Services;
-using Messenger.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services;
+using SocialMediaPlatform.Services.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +27,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IUserGetter, UserGetter>();
 builder.Services.AddScoped<IRecoveryCodeGetter, RecoveryCodeGetter>();
 builder.Services.AddScoped<IRecoveryCodeGenerator, RecoveryCodeGenerator>();
+builder.Services.AddScoped<IPostsService, PostsService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 

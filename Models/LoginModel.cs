@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.models
+namespace SocialMediaPlatform.Models
 {
 	public class LoginModel
 	{

@@ -1,6 +1,6 @@
-﻿using Messenger.models;
+﻿using SocialMediaPlatform.Models;
 
-namespace Messenger.Services.Interfaces
+namespace SocialMediaPlatform.Services.Interfaces
 {
 	public interface IUserService
 	{

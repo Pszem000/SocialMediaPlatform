@@ -1,6 +1,4 @@
-﻿using Messenger.models;
-
-namespace Messenger.Services.Interfaces
+﻿namespace SocialMediaPlatform.Services.Interfaces
 {
 	public interface IMessageService
 	{

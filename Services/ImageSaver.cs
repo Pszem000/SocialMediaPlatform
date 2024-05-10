@@ -1,7 +1,7 @@
-﻿using Messenger.Models;
-using Messenger.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-namespace Messenger.Services
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
+namespace SocialMediaPlatform.Services
 {
 	public class ImageSaver : IImageSaver
 	{

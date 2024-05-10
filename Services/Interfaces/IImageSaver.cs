@@ -1,6 +1,4 @@
-﻿using Messenger.Models;
-
-namespace Messenger.Services.Interfaces
+﻿namespace SocialMediaPlatform.Services.Interfaces
 {
 	public interface IImageSaver
 	{

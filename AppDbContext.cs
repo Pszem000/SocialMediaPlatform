@@ -1,10 +1,9 @@
-﻿using Messenger.models;
-using Messenger.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform.Models;
 
-namespace Messenger
+namespace SocialMediaPlatform
 {
 	public class AppDbContext : IdentityDbContext<UserModel>
 	{
@@ -22,6 +21,7 @@ namespace Messenger
 		public DbSet<ImageModel> ImageList { get; set; }
 
 		public virtual DbSet<MessageModel> MessageList { get; set; }
+		public DbSet<PostModel> Posts { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.models
+namespace SocialMediaPlatform.Models
 {
-    public class RegisterModel
-    {
-        [Required]
-        public string UserName { get; set; }
-        [Required]
-        [EmailAddress]
-        public string EmailAdress { get; set; }
-        [Required]
-        public string Password { get; set; }
-    }
+	public class RegisterModel
+	{
+		[Required]
+		public string UserName { get; set; }
+		[Required]
+		[EmailAddress]
+		public string EmailAdress { get; set; }
+		[Required]
+		public string Password { get; set; }
+	}
 }

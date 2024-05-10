@@ -1,8 +1,9 @@
-﻿using Messenger.models;
-using Messenger.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Services
+namespace SocialMediaPlatform.Services
 {
 	public class MessageService : IMessageService
 	{
@@ -25,6 +26,6 @@ namespace Messenger.Services
 			await _Context.SaveChangesAsync();
 			return Message.Id.ToString();
 		}
-	
+
 	}
 }

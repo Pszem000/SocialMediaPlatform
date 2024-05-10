@@ -1,7 +1,7 @@
-﻿using Messenger.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Services
+namespace SocialMediaPlatform.Services
 {
 	public class RecoveryCodeGenerator : IRecoveryCodeGenerator
 	{

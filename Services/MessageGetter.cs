@@ -1,8 +1,8 @@
-﻿using Messenger.models;
-using Messenger.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Services
+namespace SocialMediaPlatform.Services
 {
 	public class MessageGetter : IMessageGetter
 	{
@@ -15,7 +15,7 @@ namespace Messenger.Services
 		public async Task<List<MessageModel>> GetMessages(string CreatorId, string ReciverId)
 		{
 			var Messages = await _Context.MessageList
-		   .Where(x => (x.CreatorId == CreatorId && x.ReciverId == ReciverId) || (x.CreatorId == ReciverId && x.ReciverId == CreatorId))
+		   .Where(x => x.CreatorId == CreatorId && x.ReciverId == ReciverId || x.CreatorId == ReciverId && x.ReciverId == CreatorId)
 		   .ToListAsync();
 
 			return Messages;

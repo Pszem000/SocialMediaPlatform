@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Messenger.models
+namespace SocialMediaPlatform.Models
 {
 	public class MessageModel
 	{

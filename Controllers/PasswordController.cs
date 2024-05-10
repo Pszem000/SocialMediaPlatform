@@ -1,12 +1,11 @@
-﻿using Messenger.models;
-using Messenger.Models;
-using Messenger.Services;
-using Messenger.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Controllers
+namespace SocialMediaPlatform.Controllers
 {
 	public class PasswordController : Controller
 	{
@@ -50,7 +49,7 @@ namespace Messenger.Controllers
 					await _RecoveryCodeGenerator.ChangeRecoveryCode(User.Id);
 					var RecoveryCode = _RecoveryCodeGetter.GetRecoveryCode(User.Id);
 					await _EmailSender.SendEmail(EmailModel.Email, RecoveryCode);
-					return RedirectToAction("ChangePasswordByRecoveryCode", "Password", new { Email = EmailModel.Email });
+					return RedirectToAction("ChangePasswordByRecoveryCode", "Password", new { EmailModel.Email });
 				}
 				else
 				{

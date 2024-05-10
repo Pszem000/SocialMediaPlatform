@@ -1,8 +1,8 @@
-﻿using Messenger.models;
-using Messenger.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using SocialMediaPlatform.Models;
+using SocialMediaPlatform.Services.Interfaces;
 
-namespace Messenger.Services
+namespace SocialMediaPlatform.Services
 {
 	public class UserGetter : IUserGetter
 	{

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform;
 
-namespace Messenger.Controllers
+namespace SocialMediaPlatform.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]

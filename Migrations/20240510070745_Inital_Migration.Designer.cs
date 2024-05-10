@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Messenger;
+using SocialMediaPlatform;
 
 #nullable disable
 
-namespace Messenger.Migrations
+namespace SocialMediaPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240301175133_Messagemigration3")]
-    partial class Messagemigration3
+    [Migration("20240510070745_Inital_Migration")]
+    partial class Inital_Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,132 +23,6 @@ namespace Messenger.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("messager.Models.Image", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MessageId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MessageId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte[]>("image")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("MessageId1");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ImageList");
-                });
-
-            modelBuilder.Entity("messager.models.MessageModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReciverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("SendTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReciverId");
-
-                    b.ToTable("MessageList");
-                });
-
-            modelBuilder.Entity("messager.models.UserModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsOnline")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ProfileImageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -258,13 +132,142 @@ namespace Messenger.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("messager.Models.Image", b =>
+            modelBuilder.Entity("SocialMediaPlatform.Models.ImageModel", b =>
                 {
-                    b.HasOne("messager.models.MessageModel", "Message")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MessageId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId1");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ImageList");
+                });
+
+            modelBuilder.Entity("SocialMediaPlatform.Models.MessageModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReciverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SendTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReciverId");
+
+                    b.ToTable("MessageList");
+                });
+
+            modelBuilder.Entity("SocialMediaPlatform.Models.UserModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ProfileImageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecoveryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SocialMediaPlatform.Models.ImageModel", b =>
+                {
+                    b.HasOne("SocialMediaPlatform.Models.MessageModel", "Message")
                         .WithMany()
                         .HasForeignKey("MessageId1");
 
-                    b.HasOne("messager.models.UserModel", "User")
+                    b.HasOne("SocialMediaPlatform.Models.UserModel", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,15 +278,15 @@ namespace Messenger.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("messager.models.MessageModel", b =>
+            modelBuilder.Entity("SocialMediaPlatform.Models.MessageModel", b =>
                 {
-                    b.HasOne("messager.models.UserModel", "Reciver")
+                    b.HasOne("SocialMediaPlatform.Models.UserModel", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReciverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Reciver");
+                    b.Navigation("Receiver");
                 });
 #pragma warning restore 612, 618
         }

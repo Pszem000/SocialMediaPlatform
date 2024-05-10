@@ -1,4 +1,4 @@
-﻿namespace Messenger.Services.Interfaces
+﻿namespace SocialMediaPlatform.Services.Interfaces
 {
 	public interface IRecoveryCodeGenerator
 	{
