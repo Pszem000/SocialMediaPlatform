@@ -1,1 +1,52 @@
 ﻿@page "/MainPage"
+@using SocialMediaPlatform.Models
+@using SocialMediaPlatform.Services
+@using SocialMediaPlatform.Services.Interfaces
+@inject IPostsService _PostService;
+@inject IPostGetter _PostGetter;
+@inject IUserGetter _UserGetter;
+<main>
+	<div id="AddPost">
+		<p>Enter Content <input type="text" id="PostContent" @bind="PostContent" /></p>
+		<button @onclick="SavePost">Save</button>
+	</div>
+	<div id="PostsBlock">
+		@if (Posts != null)
+		{
+			foreach (var Post in Posts)
+			{
+				<div class="Post">
+					<p>@Post.Content</p>
+				</div>
+			}
+		}
+	</div>
+</main>
+@code{
+	private List<PostModel> Posts;
+	private UserModel User;
+	private string PostContent;
+	protected override async Task OnInitializedAsync()
+	{
+		User = await _UserGetter.GetLoggedUser();
+		await GetPosts();
+	}
+	private async Task GetPosts()
+	{
+		Posts = await _PostGetter.GetPosts();
+	}
+	private async Task SavePost()
+	{
+		var Content = PostContent;
+		var Post = new PostModel
+			{
+				Content = Content,
+				CreatorId = User.Id
+			};
+		PostContent = "";
+		await _PostService.AddPost(Post);
+		await GetPosts();
+
+	}
+
+}

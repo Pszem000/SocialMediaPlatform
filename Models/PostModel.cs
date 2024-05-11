@@ -13,6 +13,6 @@ namespace SocialMediaPlatform.Models
 		[Required]
 		public string CreatorId { get; set; }
 		public UserModel Creator { get; set; }
-		public DateTime PublicationDate { get; } = DateTime.Now;
+		public DateTime PublicationDate { get; set; } = DateTime.Now;
 	}
 }
