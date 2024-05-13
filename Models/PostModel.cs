@@ -9,10 +9,13 @@ namespace SocialMediaPlatform.Models
 		public string Id { get; set; } = Guid.NewGuid().ToString();
 		[Required]
 		public string Content { get; set; }
-		[ForeignKey("CreatorId ")]
+		[ForeignKey("CreatorId")]
 		[Required]
 		public string CreatorId { get; set; }
 		public UserModel Creator { get; set; }
 		public DateTime PublicationDate { get; set; } = DateTime.Now;
+		public bool IsEdited {  get; set; }	
+		public int NumberOfLikes {  get; set; }
+		public int NumberOfComments {  get; set; }
 	}
 }

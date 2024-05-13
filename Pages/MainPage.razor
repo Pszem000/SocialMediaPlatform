@@ -5,6 +5,7 @@
 @inject IPostsService _PostService;
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
+<link href="css/MainPageStyle.css" rel="stylesheet">
 <main>
 	<div id="AddPost">
 		<p>Enter Content <input type="text" id="PostContent" @bind="PostContent" /></p>
@@ -16,7 +17,36 @@
 			foreach (var Post in Posts)
 			{
 				<div class="Post">
-					<p>@Post.Content</p>
+					<div class="CreatorContainer">
+						<div class="Creator-Img-Block">
+							<img class="Creator-Img" src="/Icons/Like-Icon.png" />
+						</div>
+						<div class="Creator-Name-Block">
+							@Post.Creator.UserName
+						</div>
+					</div>
+					<div class="Post-Contnet-Block">
+						<p class="Post-Content">@Post.Content</p>
+					</div>
+						<div class="Post-Reaction-Block">
+						<div class="Likes">
+							<div class="Like-Icon">
+								<img class="Like-Icon-Img" src="/Icons/Like-Icon.png" />	
+							</div>
+							<div class="Likes-Numer">
+								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
+							</div>
+						</div>
+						<div class="Comments-Stats">
+							<div class="Comment-Icon">
+								<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png"/>
+							</div>
+							<div class="Comments-Number">
+								<p class="Comments-Number-Paragraph">@Post.NumberOfComments</p>
+							</div>
+						</div>
+					</div>
+				
 				</div>
 			}
 		}
