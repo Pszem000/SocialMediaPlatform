@@ -6,10 +6,12 @@
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
 <link href="css/MainPageStyle.css" rel="stylesheet">
-<main>
 	<div id="AddPost">
-		<p>Enter Content <input type="text" id="PostContent" @bind="PostContent" /></p>
-		<button @onclick="SavePost">Save</button>
+		<h2>Add Post</h2>
+		<br />
+		<input type="text" id="Add-Post-Content" placeholder="Enter Content" @bind="PostContent" />
+		<br />
+		<button  id="Add-Post-Button" @onclick="SavePost">Add</button>
 	</div>
 	<div id="PostsBlock">
 		@if (Posts != null)
@@ -51,7 +53,6 @@
 			}
 		}
 	</div>
-</main>
 @code{
 	private List<PostModel> Posts;
 	private UserModel User;
