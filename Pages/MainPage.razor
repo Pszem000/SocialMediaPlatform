@@ -5,6 +5,7 @@
 @inject IPostsService _PostService;
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
+@inject ILikeGetter _LikeGetter;
 <link href="css/MainPageStyle.css" rel="stylesheet">
 	<div id="AddPost">
 		<h2>Add Post</h2>
@@ -21,7 +22,7 @@
 				<div class="Post">
 					<div class="CreatorContainer">
 						<div class="Creator-Img-Block">
-							<img class="Creator-Img" src="/Icons/Like-Icon.png" />
+							<img class="Creator-Img" src="/Icons/Like-Icon.png" />					
 						</div>
 						<div class="Creator-Name-Block">
 							@Post.Creator.UserName
@@ -33,7 +34,9 @@
 						<div class="Post-Reaction-Block">
 						<div class="Likes">
 							<div class="Like-Icon">
-								<img class="Like-Icon-Img" src="/Icons/Like-Icon.png" />	
+							<button @onclick="() => AddLike(Post.Id)">
+								<img class="Like-Icon-Img" src="/Icons/Like-Icon.png" />
+								</button>
 							</div>
 							<div class="Likes-Numer">
 								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
@@ -47,8 +50,7 @@
 								<p class="Comments-Number-Paragraph">@Post.NumberOfComments</p>
 							</div>
 						</div>
-					</div>
-				
+					</div>				
 				</div>
 			}
 		}
@@ -61,6 +63,22 @@
 	{
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
+	}
+	private async Task AddLike(string PostId)
+	{
+		var Likes = await _LikeGetter.GetLikesByPostId(PostId);
+		foreach(var Like in Likes)
+		{
+			if (Like.UserId == User.Id)
+			{
+				return;
+			}
+		}
+		var Post = await _PostGetter.GetPostsById(PostId);
+		Post.NumberOfLikes++;
+		//mozna dac nieskonczonosc likow 
+
+
 	}
 	private async Task GetPosts()
 	{

@@ -16,5 +16,10 @@ namespace SocialMediaPlatform.Services
 			var Posts = await _Context.Posts.OrderByDescending(x => x.PublicationDate).ToListAsync();
 			return Posts;
 		}
+		public async Task<PostModel> GetPostsById(string PostId)
+		{
+			var Post = await _Context.Posts.Where(x => x.Id == PostId).FirstOrDefaultAsync();
+			return Post;
+		}
 	}
 }

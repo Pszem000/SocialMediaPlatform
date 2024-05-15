@@ -30,6 +30,7 @@ builder.Services.AddScoped<IRecoveryCodeGenerator, RecoveryCodeGenerator>();
 builder.Services.AddScoped<IPostsService, PostsService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IPostGetter, PostGetter>();
+builder.Services.AddScoped<ILikeGetter, LikeGetter>();
 
 
 

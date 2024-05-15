@@ -22,6 +22,7 @@ namespace SocialMediaPlatform
 
 		public virtual DbSet<MessageModel> MessageList { get; set; }
 		public DbSet<PostModel> Posts { get; set; }
+		public DbSet<LikeModel> LikeList { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -31,6 +32,12 @@ namespace SocialMediaPlatform
 			modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
 			modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
 			modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
+
+			modelBuilder.Entity<LikeModel>()
+		   .HasOne(l => l.User)
+		   .WithMany()
+		   .HasForeignKey(l => l.UserId)
+		   .OnDelete(DeleteBehavior.NoAction);
 
 		}
 
