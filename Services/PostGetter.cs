@@ -13,7 +13,7 @@ namespace SocialMediaPlatform.Services
 		}
 		public async Task<List<PostModel>> GetPosts()
 		{
-			var Posts = await _Context.Posts.OrderByDescending(x => x.PublicationDate).ToListAsync();
+			var Posts = await _Context.Posts.Include(x=> x.Creator).OrderByDescending(x => x.PublicationDate).ToListAsync();
 			return Posts;
 		}
 		public async Task<PostModel> GetPostsById(string PostId)

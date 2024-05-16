@@ -90,3 +90,7 @@ input[type="text"] {
     float: left;
     margin-left:40%;
 }
+#Like-Button{
+    background-color:transparent;
+    border:none;
+}

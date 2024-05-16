@@ -31,7 +31,7 @@ builder.Services.AddScoped<IPostsService, PostsService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IPostGetter, PostGetter>();
 builder.Services.AddScoped<ILikeGetter, LikeGetter>();
-
+builder.Services.AddScoped<ILikeService, LikeService>();
 
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

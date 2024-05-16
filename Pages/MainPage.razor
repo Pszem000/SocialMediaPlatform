@@ -6,6 +6,7 @@
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
 @inject ILikeGetter _LikeGetter;
+@inject ILikeService _LikeService;
 <link href="css/MainPageStyle.css" rel="stylesheet">
 	<div id="AddPost">
 		<h2>Add Post</h2>
@@ -34,7 +35,7 @@
 						<div class="Post-Reaction-Block">
 						<div class="Likes">
 							<div class="Like-Icon">
-							<button @onclick="() => AddLike(Post.Id)">
+							<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
 								<img class="Like-Icon-Img" src="/Icons/Like-Icon.png" />
 								</button>
 							</div>
@@ -66,19 +67,11 @@
 	}
 	private async Task AddLike(string PostId)
 	{
-		var Likes = await _LikeGetter.GetLikesByPostId(PostId);
-		foreach(var Like in Likes)
+		var Like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
+		if(Like == null)
 		{
-			if (Like.UserId == User.Id)
-			{
-				return;
-			}
+			await _LikeService.AddLikeModel(PostId, User.Id);
 		}
-		var Post = await _PostGetter.GetPostsById(PostId);
-		Post.NumberOfLikes++;
-		//mozna dac nieskonczonosc likow 
-
-
 	}
 	private async Task GetPosts()
 	{
@@ -90,7 +83,8 @@
 		var Post = new PostModel
 			{
 				Content = Content,
-				CreatorId = User.Id
+				CreatorId = User.Id,
+				Creator = User
 			};
 		PostContent = "";
 		await _PostService.AddPost(Post);

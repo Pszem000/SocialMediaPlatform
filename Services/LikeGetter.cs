@@ -16,5 +16,10 @@ namespace SocialMediaPlatform.Services
 			var Likes = await _Context.LikeList.Where(x =>  x.PostId == postId).ToListAsync();
 			return Likes;
 		}
+		public async Task<LikeModel> GetCurrentLikeModel(string PostId, string UserId)
+		{
+			var LikeModel = await _Context.LikeList.Where(x => x.UserId == UserId && x.PostId == PostId).FirstOrDefaultAsync();
+			return LikeModel;
+		}
 	}
 }
