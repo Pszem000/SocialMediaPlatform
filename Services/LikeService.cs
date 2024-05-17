@@ -1,4 +1,5 @@
-﻿using SocialMediaPlatform.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
 
 namespace SocialMediaPlatform.Services
@@ -19,6 +20,19 @@ namespace SocialMediaPlatform.Services
 			var Post = await _PostGetter.GetPostsById(PostId);
 			Post.NumberOfLikes++;
 			await _Context.SaveChangesAsync();	
+		}
+		public async Task RemoveLikeModel(string PostId, string UserId)
+		{
+			var Like = await _Context.LikeList.Where(x=>x.UserId == UserId && x.PostId == PostId).FirstOrDefaultAsync();
+			if(Like != null) 
+			{
+				_Context.LikeList.Remove(Like);
+				var Post = await _PostGetter.GetPostsById(PostId);
+				Post.NumberOfLikes--;
+				await _Context.SaveChangesAsync();
+			}
+		
+			
 		}
 	}
 }

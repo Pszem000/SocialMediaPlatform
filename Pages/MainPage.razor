@@ -7,6 +7,7 @@
 @inject IUserGetter _UserGetter;
 @inject ILikeGetter _LikeGetter;
 @inject ILikeService _LikeService;
+@inject IJSRuntime JSRunTime;
 <link href="css/MainPageStyle.css" rel="stylesheet">
 	<div id="AddPost">
 		<h2>Add Post</h2>
@@ -34,14 +35,27 @@
 					</div>
 						<div class="Post-Reaction-Block">
 						<div class="Likes">
+						@if (_LikeGetter.GetCurrentLikeModel(Post.Id, User.Id).Result == null)
+						{
 							<div class="Like-Icon">
-							<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-								<img class="Like-Icon-Img" src="/Icons/Like-Icon.png" />
+								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
+									<img class="Like-Icon-Img" id="LikeIcon" src="/Icons/Like-Icon1.png" />
 								</button>
 							</div>
 							<div class="Likes-Numer">
 								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
 							</div>
+						}else{
+							<div class="Like-Icon">
+								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
+									<img class="Like-Icon-Img" id="LikeIcon" src="/Icons/Like-Icon2.png" />
+								</button>
+							</div>
+							<div class="Likes-Numer">
+								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
+							</div>
+						}
+						
 						</div>
 						<div class="Comments-Stats">
 							<div class="Comment-Icon">
@@ -65,12 +79,21 @@
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
 	}
+
 	private async Task AddLike(string PostId)
 	{
 		var Like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
 		if(Like == null)
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
+			ChangeSrc("LikeIcon", "/Icons/Like-Icon2.png");
+		
+		}
+		else
+		{
+			await _LikeService.RemoveLikeModel(PostId, User.Id);
+			ChangeSrc("LikeIcon", "/Icons/Like-Icon1.png");
+			
 		}
 	}
 	private async Task GetPosts()
@@ -91,5 +114,7 @@
 		await GetPosts();
 
 	}
-
+	private void ChangeSrc(string ElementId,string NewSrc){
+		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
+	}
 }
