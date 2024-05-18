@@ -9,96 +9,96 @@
 @inject ILikeService _LikeService;
 @inject IJSRuntime JSRunTime;
 <link href="css/MainPageStyle.css" rel="stylesheet">
-	<div id="AddPost">
-		<h2>Add Post</h2>
-		<br />
-		<input type="text" id="Add-Post-Content" placeholder="Enter Content" @bind="PostContent" />
-		<br />
-		<button  id="Add-Post-Button" @onclick="SavePost">Add</button>
-	</div>
-	<div id="PostsBlock">
-		@if (Posts != null)
+<div id="AddPost">
+	<h2>Add Post</h2>
+	<br />
+	<input type="text" id="Add-Post-Content" placeholder="Enter Content" @bind="PostContent" />
+	<br />
+	<button id="Add-Post-Button" @onclick="SavePost">Add</button>
+</div>
+<div id="PostsBlock">
+
+	@if (Posts != null)
+	{
+		foreach (var Post in Posts)
 		{
-			foreach (var Post in Posts)
-			{
-				<div class="Post">
-					<div class="CreatorContainer">
-						<div class="Creator-Img-Block">
-							<img class="Creator-Img" src="/Icons/Like-Icon.png" />					
-						</div>
-						<div class="Creator-Name-Block">
-							@Post.Creator.UserName
-						</div>
+			<div class="Post">
+				<div class="CreatorContainer">
+					<div class="Creator-Img-Block">
+						<img class="Creator-Img" src="/Icons/Like-Icon.png" />
 					</div>
-					<div class="Post-Contnet-Block">
-						<p class="Post-Content">@Post.Content</p>
+					<div class="Creator-Name-Block">
+						@Post.Creator.UserName
 					</div>
-						<div class="Post-Reaction-Block">
-						<div class="Likes">
-						@if (_LikeGetter.GetCurrentLikeModel(Post.Id, User.Id).Result == null)
-						{
-							<div class="Like-Icon">
-								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-									<img class="Like-Icon-Img" id="LikeIcon" src="/Icons/Like-Icon1.png" />
-								</button>
-							</div>
-							<div class="Likes-Numer">
-								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
-							</div>
-						}else{
-							<div class="Like-Icon">
-								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-									<img class="Like-Icon-Img" id="LikeIcon" src="/Icons/Like-Icon2.png" />
-								</button>
-							</div>
-							<div class="Likes-Numer">
-								<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
-							</div>
-						}
-						
-						</div>
-						<div class="Comments-Stats">
-							<div class="Comment-Icon">
-								<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png"/>
-							</div>
-							<div class="Comments-Number">
-								<p class="Comments-Number-Paragraph">@Post.NumberOfComments</p>
-							</div>
-						</div>
-					</div>				
 				</div>
-			}
+				<div class="Post-Contnet-Block">
+					<p class="Post-Content">@Post.Content</p>
+				</div>
+				<div class="Post-Reaction-Block">
+					<div class="Likes">
+						<div class="Like-Icon">
+							<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
+								<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon1.png" />
+							</button>
+						</div>
+						<div class="Likes-Numer">
+							<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
+						</div>
+					</div>
+					<div class="Comments-Stats">
+						<div class="Comment-Icon">
+							<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png" />
+						</div>
+						<div class="Comments-Number">
+							<p class="Comments-Number-Paragraph">@Post.NumberOfComments</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 		}
-	</div>
-@code{
+	}
+</div>
+@code {
 	private List<PostModel> Posts;
 	private UserModel User;
 	private string PostContent;
+
 	protected override async Task OnInitializedAsync()
 	{
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
+		StateHasChanged();
 	}
-
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadLikes();
+		}
+	}
 	private async Task AddLike(string PostId)
 	{
+
 		var Like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
-		if(Like == null)
+		if (Like == null)
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
-			ChangeSrc("LikeIcon", "/Icons/Like-Icon2.png");
-		
+			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
+
 		}
 		else
 		{
 			await _LikeService.RemoveLikeModel(PostId, User.Id);
-			ChangeSrc("LikeIcon", "/Icons/Like-Icon1.png");
-			
+			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon1.png");
+
 		}
+
 	}
 	private async Task GetPosts()
 	{
 		Posts = await _PostGetter.GetPosts();
+		Console.WriteLine(Posts.Count);
 	}
 	private async Task SavePost()
 	{
@@ -114,7 +114,22 @@
 		await GetPosts();
 
 	}
-	private void ChangeSrc(string ElementId,string NewSrc){
+	private void ChangeSrc(string ElementId, string NewSrc)
+	{
 		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
+	}
+	private async Task LoadLikes()
+	{
+		if (Posts != null)
+		{
+			foreach (var Post in Posts)
+			{
+				var like = await _LikeGetter.GetCurrentLikeModel(Post.Id, User.Id);
+				if (like != null)
+				{
+					ChangeSrc($"LikeIcon-{Post.Id}", "/Icons/Like-Icon2.png");
+				}
+			}
+		}
 	}
 }
