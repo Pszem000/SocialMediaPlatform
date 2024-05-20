@@ -8,7 +8,9 @@
 @inject ILikeGetter _LikeGetter;
 @inject ILikeService _LikeService;
 @inject IJSRuntime JSRunTime;
+
 <link href="css/MainPageStyle.css" rel="stylesheet">
+
 <div id="AddPost">
 	<h2>Add Post</h2>
 	<br />
@@ -16,8 +18,8 @@
 	<br />
 	<button id="Add-Post-Button" @onclick="SavePost">Add</button>
 </div>
-<div id="PostsBlock">
 
+<div id="PostsBlock">
 	@if (Posts != null)
 	{
 		foreach (var Post in Posts)
@@ -55,10 +57,10 @@
 					</div>
 				</div>
 			</div>
-			
 		}
 	}
 </div>
+
 @code {
 	private List<PostModel> Posts;
 	private UserModel User;
@@ -68,68 +70,64 @@
 	{
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
-		StateHasChanged();
+		//POSTMODEL DODAJ LUDZIE KTORZY TO LUBIA POTEM POBIERAJ POSTY Z TA LISTA I NA PODSTAWIE LISTY WYSWIETLAJ IKONY
 	}
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			await LoadLikes();
-		}
-	}
+	
+
 	private async Task AddLike(string PostId)
 	{
-
-		var Like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
-		if (Like == null)
+		var like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
+		if (like == null)
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
 			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
-
 		}
 		else
 		{
 			await _LikeService.RemoveLikeModel(PostId, User.Id);
 			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon1.png");
-
 		}
-
 	}
+
 	private async Task GetPosts()
 	{
 		Posts = await _PostGetter.GetPosts();
-		Console.WriteLine(Posts.Count);
 	}
+
 	private async Task SavePost()
 	{
-		var Content = PostContent;
-		var Post = new PostModel
+		var post = new PostModel
 			{
-				Content = Content,
+				Content = PostContent,
 				CreatorId = User.Id,
 				Creator = User
 			};
 		PostContent = "";
-		await _PostService.AddPost(Post);
+		await _PostService.AddPost(post);
 		await GetPosts();
-
 	}
+
+	private async Task LoadLikes()
+	{
+		foreach (var post in Posts)
+		{
+			var like = await _LikeGetter.GetCurrentLikeModel(post.Id, User.Id);
+			if (like != null)
+			{
+				ChangeSrc($"LikeIcon-{post.Id}", "/Icons/Like-Icon2.png");
+			}
+		}
+	}
+
 	private void ChangeSrc(string ElementId, string NewSrc)
 	{
 		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
 	}
-	private async Task LoadLikes()
+
+	private string GetLikeIconSrc(string postId)
 	{
-		if (Posts != null)
-		{
-			foreach (var Post in Posts)
-			{
-				var like = await _LikeGetter.GetCurrentLikeModel(Post.Id, User.Id);
-				if (like != null)
-				{
-					ChangeSrc($"LikeIcon-{Post.Id}", "/Icons/Like-Icon2.png");
-				}
-			}
-		}
+		var like = _LikeGetter.GetCurrentLikeModel(postId, User.Id);
+		return "/Icons/Like-Icon1.png";
+
 	}
 }
