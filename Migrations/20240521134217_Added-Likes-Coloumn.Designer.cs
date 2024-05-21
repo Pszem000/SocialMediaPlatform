@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMediaPlatform;
 
@@ -11,9 +12,10 @@ using SocialMediaPlatform;
 namespace SocialMediaPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521134217_Added-Likes-Coloumn")]
+    partial class AddedLikesColoumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -60,7 +62,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -82,7 +84,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims", (string)null);
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -99,7 +101,7 @@ namespace SocialMediaPlatform.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -110,7 +112,7 @@ namespace SocialMediaPlatform.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -127,7 +129,7 @@ namespace SocialMediaPlatform.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.ImageModel", b =>
@@ -162,7 +164,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ImageList", (string)null);
+                    b.ToTable("ImageList");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.LikeModel", b =>
@@ -184,7 +186,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LikeList", (string)null);
+                    b.ToTable("LikeList");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.MessageModel", b =>
@@ -217,7 +219,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasIndex("ReciverId");
 
-                    b.ToTable("MessageList", (string)null);
+                    b.ToTable("MessageList");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.PostModel", b =>
@@ -249,7 +251,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.UserModel", b =>
@@ -315,7 +317,7 @@ namespace SocialMediaPlatform.Migrations
 
                     b.HasIndex("PostModelId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SocialMediaPlatform.Models.ImageModel", b =>

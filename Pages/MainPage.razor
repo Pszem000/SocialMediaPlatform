@@ -57,6 +57,7 @@
 					</div>
 				</div>
 			</div>
+			LoadLikes();
 		}
 	}
 </div>
@@ -70,9 +71,8 @@
 	{
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
-		//POSTMODEL DODAJ LUDZIE KTORZY TO LUBIA POTEM POBIERAJ POSTY Z TA LISTA I NA PODSTAWIE LISTY WYSWIETLAJ IKONY
 	}
-	
+
 
 	private async Task AddLike(string PostId)
 	{
@@ -107,18 +107,18 @@
 		await GetPosts();
 	}
 
-	private async Task LoadLikes()
+
+	private void LoadLikes()
 	{
-		foreach (var post in Posts)
+		foreach(var Post in Posts)
 		{
-			var like = await _LikeGetter.GetCurrentLikeModel(post.Id, User.Id);
-			if (like != null)
+			if (Post.Likes.Contains(User))
 			{
-				ChangeSrc($"LikeIcon-{post.Id}", "/Icons/Like-Icon2.png");
+				ChangeSrc("LikeIcon-" + Post.Id, "/Icons/Like-Icon2.png");
 			}
+
 		}
 	}
-
 	private void ChangeSrc(string ElementId, string NewSrc)
 	{
 		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);

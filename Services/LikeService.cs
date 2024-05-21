@@ -8,16 +8,20 @@ namespace SocialMediaPlatform.Services
 	{
 		private readonly AppDbContext _Context;
 		private readonly IPostGetter _PostGetter;
-		public LikeService(AppDbContext Context, IPostGetter PostGetter)
+		private readonly IUserGetter _UserGetter;
+		public LikeService(AppDbContext Context, IPostGetter PostGetter, IUserGetter UserGetter)
 		{
 			_Context = Context;
 			_PostGetter = PostGetter;
+			_UserGetter = UserGetter;
 		}
 		public async Task AddLikeModel(string PostId,string UserId)
 		{
 			var LikeModel = new LikeModel { PostId = PostId, UserId = UserId };
 			await _Context.LikeList.AddAsync(LikeModel);
 			var Post = await _PostGetter.GetPostsById(PostId);
+			var User = await _UserGetter.GetUserById(UserId);
+			Post.Likes.Add(User);
 			Post.NumberOfLikes++;
 			await _Context.SaveChangesAsync();	
 		}
@@ -28,6 +32,8 @@ namespace SocialMediaPlatform.Services
 			{
 				_Context.LikeList.Remove(Like);
 				var Post = await _PostGetter.GetPostsById(PostId);
+				var User = await _UserGetter.GetUserById(UserId);
+				Post.Likes.Remove(User);
 				Post.NumberOfLikes--;
 				await _Context.SaveChangesAsync();
 			}

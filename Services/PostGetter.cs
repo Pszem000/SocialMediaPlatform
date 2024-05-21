@@ -13,12 +13,12 @@ namespace SocialMediaPlatform.Services
 		}
 		public async Task<List<PostModel>> GetPosts()
 		{
-			var Posts = await _Context.Posts.Include(x=> x.Creator).OrderByDescending(x => x.PublicationDate).ToListAsync();
+			var Posts = await _Context.Posts.Include(x=> x.Creator).Include(x => x.Likes).OrderByDescending(x => x.PublicationDate).ToListAsync();
 			return Posts;
 		}
 		public async Task<PostModel> GetPostsById(string PostId)
 		{			
-			var Post = await _Context.Posts.Where(x => x.Id == PostId).FirstOrDefaultAsync();
+			var Post = await _Context.Posts.Where(x => x.Id == PostId).Include(x => x.Creator).Include(x => x.Likes).FirstOrDefaultAsync();
 			return Post;
 		}
 	}

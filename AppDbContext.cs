@@ -32,12 +32,13 @@ namespace SocialMediaPlatform
 			modelBuilder.Entity<IdentityUserLogin<string>>().HasNoKey();
 			modelBuilder.Entity<IdentityUserRole<string>>().HasNoKey();
 			modelBuilder.Entity<IdentityUserToken<string>>().HasNoKey();
-
+			
 			modelBuilder.Entity<LikeModel>()
 		   .HasOne(l => l.User)
 		   .WithMany()
 		   .HasForeignKey(l => l.UserId)
 		   .OnDelete(DeleteBehavior.NoAction);
+			
 
 		}
 
