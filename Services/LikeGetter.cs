@@ -6,6 +6,7 @@ namespace SocialMediaPlatform.Services
 {
 	public class LikeGetter : ILikeGetter
 	{
+		
 		private readonly AppDbContext _Context;
 		public LikeGetter(AppDbContext context)
 		{
@@ -14,12 +15,13 @@ namespace SocialMediaPlatform.Services
 		public async Task<List<LikeModel>> GetLikesByPostId(string postId)
 		{
 			var Likes = await _Context.LikeList.Where(x =>  x.PostId == postId).ToListAsync();
-			return Likes;
+			return null;
 		}
 		public async Task<LikeModel> GetCurrentLikeModel(string PostId, string UserId)
 		{
 			var LikeModel = await _Context.LikeList.Where(x => x.UserId == UserId && x.PostId == PostId).FirstOrDefaultAsync();
-			return LikeModel;
+			return null;
 		}
+		
 	}
 }

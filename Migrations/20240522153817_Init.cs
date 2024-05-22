@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SocialMediaPlatform.Migrations
 {
-    public partial class Inital_Migration : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -142,6 +142,29 @@ namespace SocialMediaPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PublicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsEdited = table.Column<bool>(type: "bit", nullable: false),
+                    NumberOfLikes = table.Column<int>(type: "int", nullable: false),
+                    NumberOfComments = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_Users_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ImageList",
                 columns: table => new
                 {
@@ -169,6 +192,31 @@ namespace SocialMediaPlatform.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "LikeList",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PostId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LikeList", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LikeList_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LikeList_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ImageList_MessageId1",
                 table: "ImageList",
@@ -180,15 +228,33 @@ namespace SocialMediaPlatform.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LikeList_PostId",
+                table: "LikeList",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LikeList_UserId",
+                table: "LikeList",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MessageList_ReciverId",
                 table: "MessageList",
                 column: "ReciverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_CreatorId",
+                table: "Posts",
+                column: "CreatorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "ImageList");
+
+            migrationBuilder.DropTable(
+                name: "LikeList");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
@@ -210,6 +276,9 @@ namespace SocialMediaPlatform.Migrations
 
             migrationBuilder.DropTable(
                 name: "MessageList");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Users");

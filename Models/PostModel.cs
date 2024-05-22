@@ -16,7 +16,7 @@ namespace SocialMediaPlatform.Models
 		public DateTime PublicationDate { get; set; } = DateTime.Now;
 		public bool IsEdited {  get; set; }	
 		public int NumberOfLikes {  get; set; }
-		public int NumberOfComments {  get; set; }
-		public ICollection<UserModel> Likes { get; set; }
+		public int NumberOfComments { get; set; }
+		public ICollection<LikeModel> Likes { get; set; }
 	}
 }

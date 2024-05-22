@@ -7,5 +7,6 @@ namespace SocialMediaPlatform.Models
 		public int? ProfileImageId { get; set; }
 		public bool IsOnline { get; set; }
 		public string? RecoveryCode { get; set; }
+		public ICollection<LikeModel> Likes { get; set; }
 	}
 }

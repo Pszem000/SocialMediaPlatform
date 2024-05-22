@@ -76,8 +76,10 @@
 
 	private async Task AddLike(string PostId)
 	{
+		//pobiera posty bez lajkow nie wiem czemu
+		var Post = await _PostGetter.GetPostsById(PostId);
 		var like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
-		if (like == null)
+		if (Post.Likes.Where(like => like.UserId == User.Id).Any())
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
 			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
@@ -110,14 +112,16 @@
 
 	private void LoadLikes()
 	{
+		
 		foreach(var Post in Posts)
 		{
-			if (Post.Likes.Contains(User))
+			if (Post.Likes.Where(x => x.UserId == User.Id) != null)
 			{
 				ChangeSrc("LikeIcon-" + Post.Id, "/Icons/Like-Icon2.png");
 			}
 
 		}
+		
 	}
 	private void ChangeSrc(string ElementId, string NewSrc)
 	{

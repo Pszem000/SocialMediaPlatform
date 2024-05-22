@@ -12,8 +12,8 @@ using SocialMediaPlatform;
 namespace SocialMediaPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240510110909_Add_Posts_Table")]
-    partial class Add_Posts_Table
+    [Migration("20240522153817_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -167,6 +167,28 @@ namespace SocialMediaPlatform.Migrations
                     b.ToTable("ImageList");
                 });
 
+            modelBuilder.Entity("SocialMediaPlatform.Models.LikeModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LikeList");
+                });
+
             modelBuilder.Entity("SocialMediaPlatform.Models.MessageModel", b =>
                 {
                     b.Property<int>("Id")
@@ -212,6 +234,18 @@ namespace SocialMediaPlatform.Migrations
                     b.Property<string>("CreatorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfComments")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfLikes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PublicationDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -298,6 +332,25 @@ namespace SocialMediaPlatform.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SocialMediaPlatform.Models.LikeModel", b =>
+                {
+                    b.HasOne("SocialMediaPlatform.Models.PostModel", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialMediaPlatform.Models.UserModel", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialMediaPlatform.Models.MessageModel", b =>
                 {
                     b.HasOne("SocialMediaPlatform.Models.UserModel", "Receiver")
@@ -318,6 +371,16 @@ namespace SocialMediaPlatform.Migrations
                         .IsRequired();
 
                     b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("SocialMediaPlatform.Models.PostModel", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("SocialMediaPlatform.Models.UserModel", b =>
+                {
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }
