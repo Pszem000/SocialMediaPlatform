@@ -18,5 +18,6 @@ namespace SocialMediaPlatform.Models
 		public int NumberOfLikes {  get; set; }
 		public int NumberOfComments { get; set; }
 		public ICollection<LikeModel> Likes { get; set; }
+		public bool IsLikedByCurrentUser { get; set; }
 	}
 }
