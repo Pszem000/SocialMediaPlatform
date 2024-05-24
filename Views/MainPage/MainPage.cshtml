@@ -4,12 +4,12 @@
 
 <div id="AddPost">
 	<h2>Add Post</h2>
-	<form asp-controller="MainPage" asp-action="SavePost" method="post">
-		@Html.AntiForgeryToken()
+	@using (Html.BeginForm("SavePost", "MainPage", FormMethod.Post, new { @class = "Form" }))
+	{
 		<input type="text" id="Add-Post-Content" placeholder="Enter Content" name="Content" />
 		<br />
 		<button id="Add-Post-Button" type="submit">Add</button>
-	</form>
+	}
 </div>
 <div id="PostsBlock">
 	@if (Model != null)

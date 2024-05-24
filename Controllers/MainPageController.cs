@@ -36,9 +36,8 @@ namespace SocialMediaPlatform.Controllers
 			}
 			return View(Posts);
 		}
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task SavePost(string Content)
+		[HttpGet]
+		public async Task<IActionResult> SavePost(string Content)
 		{
 			//nie strzela w breakpoint nie wiem czemu
 			if(User != null)
@@ -50,7 +49,7 @@ namespace SocialMediaPlatform.Controllers
 				};
 				await _PostService.AddPost(postModel);
 			}
-				
+			return Ok();
 		}
 	}
 }

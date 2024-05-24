@@ -39,9 +39,18 @@
 				<div class="Post-Reaction-Block">
 					<div class="Likes">
 						<div class="Like-Icon">
-							<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-								<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon1.png" />
-							</button>
+							@if (Post.IsLikedByCurrentUser)
+							{
+								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
+									<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon2.png" />
+								</button>
+							}
+							else
+							{
+								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
+									<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon1.png" />
+								</button>
+							}
 						</div>
 						<div class="Likes-Numer">
 							<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
@@ -57,7 +66,7 @@
 					</div>
 				</div>
 			</div>
-			LoadLikes();
+		
 		}
 	}
 </div>
@@ -69,17 +78,37 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		//zrob Dict[Post]=sciezka zdjecia
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
+		foreach (var Post in Posts)
+		{
+			if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
+			{
+				Post.IsLikedByCurrentUser = true;
+			}
+		}
 	}
-
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(Posts != null)
+		{
+			foreach (var Post in Posts)
+			{
+				Post.IsLikedByCurrentUser = false;
+			}
+			
+		}
+		
+		
+	}
 
 	private async Task AddLike(string PostId)
 	{
-		//pobiera posty bez lajkow nie wiem czemu
+
 		var Post = await _PostGetter.GetPostsById(PostId);
 		var like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
-		if (Post.Likes.Where(like => like.UserId == User.Id).Any())
+		if (like != null)
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
 			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
