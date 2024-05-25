@@ -93,3 +93,8 @@ input[type="text"] {
     background-color:transparent;
     border:none;
 }
+.Comment-Block {
+    width:100%;
+    height:50px;
+    background-color:red;
+}

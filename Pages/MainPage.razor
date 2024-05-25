@@ -20,95 +20,79 @@
 </div>
 
 <div id="PostsBlock">
-	@if (Posts != null)
+	@if (PostsList != null)
 	{
-		foreach (var Post in Posts)
+		foreach (var Post in PostsDict)
 		{
-			<div class="Post">
+			<div class="Post" id="Post-@Post.Key.Id">
 				<div class="CreatorContainer">
 					<div class="Creator-Img-Block">
 						<img class="Creator-Img" src="/Icons/Like-Icon.png" />
 					</div>
 					<div class="Creator-Name-Block">
-						@Post.Creator.UserName
+						@Post.Key.Creator.UserName
 					</div>
 				</div>
 				<div class="Post-Contnet-Block">
-					<p class="Post-Content">@Post.Content</p>
+					<p class="Post-Content">@Post.Key.Content</p>
 				</div>
 				<div class="Post-Reaction-Block">
 					<div class="Likes">
 						<div class="Like-Icon">
-							@if (Post.IsLikedByCurrentUser)
-							{
-								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-									<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon2.png" />
-								</button>
-							}
-							else
-							{
-								<button id="Like-Button" @onclick="() => AddLike(Post.Id)">
-									<img class="Like-Icon-Img" id="LikeIcon-@Post.Id" src="/Icons/Like-Icon1.png" />
-								</button>
-							}
+						<button id="Like-Button" @onclick="() => AddLike(Post.Key.Id)">
+							<img class="Like-Icon-Img" id="LikeIcon-@Post.Key.Id" src="@Post.Value" />
+						</button>						
 						</div>
 						<div class="Likes-Numer">
-							<p class="Likes-Number-Paragraph">@Post.NumberOfLikes</p>
+							<p class="Likes-Number-Paragraph">@Post.Key.NumberOfLikes</p>
 						</div>
 					</div>
 					<div class="Comments-Stats">
-						<div class="Comment-Icon">
+						<button class="Comment-Icon" @onclick="() => AddCommentBlock(Post.Key.Id) " >
 							<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png" />
-						</div>
+						</button>
 						<div class="Comments-Number">
-							<p class="Comments-Number-Paragraph">@Post.NumberOfComments</p>
+							<p class="Comments-Number-Paragraph">@Post.Key.NumberOfComments</p>
 						</div>
 					</div>
 				</div>
 			</div>
-		
+
 		}
 	}
 </div>
 
 @code {
-	private List<PostModel> Posts;
+	private List<PostModel> PostsList;
 	private UserModel User;
 	private string PostContent;
+	private Dictionary<PostModel, string> PostsDict = new Dictionary<PostModel, string>();
 
 	protected override async Task OnInitializedAsync()
 	{
-		//zrob Dict[Post]=sciezka zdjecia
+
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
-		foreach (var Post in Posts)
+		foreach (var Post in PostsList)
 		{
 			if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
 			{
-				Post.IsLikedByCurrentUser = true;
+				PostsDict[Post] = "/Icons/Like-Icon2.png";
 			}
-		}
-	}
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if(Posts != null)
-		{
-			foreach (var Post in Posts)
+			else
 			{
-				Post.IsLikedByCurrentUser = false;
+				PostsDict[Post] = "/Icons/Like-Icon1.png";
 			}
-			
 		}
-		
-		
 	}
+
 
 	private async Task AddLike(string PostId)
 	{
 
 		var Post = await _PostGetter.GetPostsById(PostId);
 		var like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
-		if (like != null)
+		if (like == null)
 		{
 			await _LikeService.AddLikeModel(PostId, User.Id);
 			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
@@ -122,7 +106,7 @@
 
 	private async Task GetPosts()
 	{
-		Posts = await _PostGetter.GetPosts();
+		PostsList = await _PostGetter.GetPosts();
 	}
 
 	private async Task SavePost()
@@ -137,30 +121,13 @@
 		await _PostService.AddPost(post);
 		await GetPosts();
 	}
-
-
-	private void LoadLikes()
-	{
-		
-		foreach(var Post in Posts)
-		{
-			if (Post.Likes.Where(x => x.UserId == User.Id) != null)
-			{
-				ChangeSrc("LikeIcon-" + Post.Id, "/Icons/Like-Icon2.png");
-			}
-
-		}
-		
-	}
 	private void ChangeSrc(string ElementId, string NewSrc)
 	{
 		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
 	}
-
-	private string GetLikeIconSrc(string postId)
+	private void AddCommentBlock(string PostId)
 	{
-		var like = _LikeGetter.GetCurrentLikeModel(postId, User.Id);
-		return "/Icons/Like-Icon1.png";
-
+		var ElementId = $"Post-{PostId}";
+		JSRunTime.InvokeVoidAsync("AddCommentBlock", ElementId);
 	}
 }
