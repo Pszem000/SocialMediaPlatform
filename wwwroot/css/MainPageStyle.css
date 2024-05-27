@@ -98,3 +98,15 @@ input[type="text"] {
     height:50px;
     background-color:red;
 }
+.CloseButton {
+    height: 15px;
+    width: 15px;
+    float: right;
+    margin: 5px 15px;
+    border: none;
+    background-color: transparent;
+}
+.CloseIcon{
+    height:15px;
+    width:15px;
+}

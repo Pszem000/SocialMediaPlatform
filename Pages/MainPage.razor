@@ -127,7 +127,6 @@
 	}
 	private void AddCommentBlock(string PostId)
 	{
-		var ElementId = $"Post-{PostId}";
-		JSRunTime.InvokeVoidAsync("AddCommentBlock", ElementId);
+		JSRunTime.InvokeVoidAsync("AddCommentBlock", PostId);
 	}
 }
