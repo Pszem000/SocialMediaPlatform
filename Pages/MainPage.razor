@@ -125,8 +125,17 @@
 	{
 		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
 	}
-	private void AddCommentBlock(string PostId)
+	private async Task AddCommentBlock(string PostId)
 	{
-		JSRunTime.InvokeVoidAsync("AddCommentBlock", PostId);
+		await JSRunTime.InvokeVoidAsync("AddCommentBlock", PostId);
+		await AddComments(PostId);
+	}
+	private async Task AddComments(string PostId)
+	{
+		var Post = await _PostGetter.GetPostsById(PostId);
+		foreach(var Comment in Post.Comments)
+		{
+			await JSRunTime.InvokeVoidAsync("AddComment",$"CommentBlock-{PostId}",Comment.Creator.UserName,Comment.Content);
+		}
 	}
 }

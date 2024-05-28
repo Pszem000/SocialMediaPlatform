@@ -23,6 +23,7 @@ namespace SocialMediaPlatform
 		public virtual DbSet<MessageModel> MessageList { get; set; }
 		public DbSet<PostModel> Posts { get; set; }
 		public DbSet<LikeModel> LikeList { get; set; }
+		public DbSet<CommentModel> Comments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -26,13 +26,19 @@ function ShoutCommentBlock(ElementId) {
     CommentBlock.remove();
 }
 function AddComment(CommentBlockId, CreatorName, Content) {
+    var CommentBlock = document.getElementById(CommentBlockId);
     var CommentDiv = document.createElement("div");
     var CreatorNameDiv = document.createElement("div");
     var ContentDiv = document.createElement("div");
+
+    CommentDiv.className = "Comment";
+    CreatorNameDiv.className = "Comment-CreatorName";
+    ContentDiv.className = "Comment-Content";
 
     CreatorNameDiv.textContent = CreatorName;
     ContentDiv.textContent = Content;
 
     CommentDiv.appendChild(CreatorNameDiv);
     CommentDiv.appendChild(ContentDiv);
+    CommentBlock.appendChild(CommentDiv);
 }

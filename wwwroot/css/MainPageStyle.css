@@ -40,6 +40,9 @@ input[type="text"] {
 }
 #PostsBlock {
     max-height: 80%;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 .Post {
     width: 50%;
@@ -94,9 +97,11 @@ input[type="text"] {
     border:none;
 }
 .Comment-Block {
-    width:100%;
-    height:50px;
-    background-color:red;
+    width: 100%;
+    height: 50px;
+    background-color: red;
+    display: flex;
+    flex-direction: column;
 }
 .CloseButton {
     height: 15px;
@@ -109,4 +114,12 @@ input[type="text"] {
 .CloseIcon{
     height:15px;
     width:15px;
+}
+
+.Comment{
+    background-color:blue;
+}
+.Comment-Content, .Comment-CreatorName {
+    margin:0px 10px;
+    text-align: left;
 }
