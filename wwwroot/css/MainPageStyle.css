@@ -2,6 +2,7 @@
     background: rgb(64, 64, 64);
     color: white;
     margin: 0;
+    padding: 0;
 }
 .Creator-Img {
     width: 50px;
@@ -92,34 +93,53 @@ input[type="text"] {
     float: left;
     margin-left:40%;
 }
-#Like-Button{
-    background-color:transparent;
-    border:none;
+.Like-Button, .Comment-Icon {
+    background-color: transparent;
+    border: none;
 }
+
 .Comment-Block {
     width: 100%;
-    height: 50px;
-    background-color: red;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+    margin: 10px;
+    background: rgb(58,58,58);
 }
 .CloseButton {
     height: 15px;
     width: 15px;
-    float: right;
-    margin: 5px 15px;
+    margin:0px 15px;
     border: none;
     background-color: transparent;
 }
-.CloseIcon{
-    height:15px;
-    width:15px;
+.CloseIcon {
+    height: 15px;
+    width: 15px;
 }
-
-.Comment{
-    background-color:blue;
+.CloseButton-Container{
+    float:right;
+    margin:5px 0px;
+}
+.Comment {
+    background: rgb(52,52,52);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    width: 99%;
 }
 .Comment-Content, .Comment-CreatorName {
     margin:0px 10px;
     text-align: left;
+
 }
+
+.CommentContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-height: 2100px;
+    overflow: auto;
+}
+

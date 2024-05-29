@@ -39,7 +39,7 @@
 				<div class="Post-Reaction-Block">
 					<div class="Likes">
 						<div class="Like-Icon">
-						<button id="Like-Button" @onclick="() => AddLike(Post.Key.Id)">
+						<button class="Like-Button" @onclick="() => AddLike(Post.Key.Id)">
 							<img class="Like-Icon-Img" id="LikeIcon-@Post.Key.Id" src="@Post.Value" />
 						</button>						
 						</div>
@@ -135,7 +135,7 @@
 		var Post = await _PostGetter.GetPostsById(PostId);
 		foreach(var Comment in Post.Comments)
 		{
-			await JSRunTime.InvokeVoidAsync("AddComment",$"CommentBlock-{PostId}",Comment.Creator.UserName,Comment.Content);
+			await JSRunTime.InvokeVoidAsync("AddComment",PostId,Comment.Creator.UserName,Comment.Content);
 		}
 	}
 }
