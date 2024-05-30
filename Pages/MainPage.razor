@@ -1,4 +1,4 @@
-﻿@page "/MainPage2"
+﻿@page "/MainPage"
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services
 @using SocialMediaPlatform.Services.Interfaces
@@ -70,7 +70,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-
+		// dodaj lamanie tekstu w komentarzach
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
 		foreach (var Post in PostsList)
