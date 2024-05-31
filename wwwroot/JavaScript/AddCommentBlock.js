@@ -74,27 +74,10 @@ function AddComment(PostId, CreatorName, Content) {
     ContentDiv.className = "Comment-Content";
 
     CreatorNameDiv.textContent = CreatorName;
-    ContentDiv.textContent = Content;
+    ContentDiv.innerHTML = Content;
 
     CommentDiv.appendChild(CreatorNameDiv);
     CommentDiv.appendChild(ContentDiv);
     CommentBlock.appendChild(CommentDiv);
 }
 
-function addBreakLines(message) {
-    var messageWithBreakLines = "";
-    var outputText = "";
-    var counter = 0;
-
-    for (var i = 0; i < message.length; i++) {
-        var c = message[i];
-        if (counter >= 100 && c !== ' ') {
-            outputText += "<br>";
-            counter = 0;
-        }
-        outputText += c;
-        counter++;
-    }
-    messageWithBreakLines = outputText;
-    return messageWithBreakLines;
-}

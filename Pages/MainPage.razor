@@ -2,6 +2,7 @@
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services
 @using SocialMediaPlatform.Services.Interfaces
+@using System.Text
 @inject IPostsService _PostService;
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
@@ -10,7 +11,10 @@
 @inject IJSRuntime JSRunTime;
 
 <link href="css/MainPageStyle.css" rel="stylesheet">
-
+<div id="MainPage-OtherThings">
+	<p>TEST</p>
+</div>
+<div id="MainPage-Posts">
 <div id="AddPost">
 	<h2>Add Post</h2>
 	<br />
@@ -61,7 +65,7 @@
 		}
 	}
 </div>
-
+</div>
 @code {
 	private List<PostModel> PostsList;
 	private UserModel User;
@@ -70,7 +74,6 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		// dodaj lamanie tekstu w komentarzach
 		User = await _UserGetter.GetLoggedUser();
 		await GetPosts();
 		foreach (var Post in PostsList)
@@ -135,7 +138,26 @@
 		var Post = await _PostGetter.GetPostsById(PostId);
 		foreach(var Comment in Post.Comments)
 		{
-			await JSRunTime.InvokeVoidAsync("AddComment",PostId,Comment.Creator.UserName,Comment.Content);
+			await JSRunTime.InvokeVoidAsync("AddComment", PostId, Comment.Creator.UserName, AddBreakLines(Comment.Content));
 		}
+	}
+	private string AddBreakLines(string Message)
+	{
+		var MessageWithBreakLines = "";
+		StringBuilder OutPutText = new StringBuilder();
+		int Counter = 0;
+
+		foreach (char c in Message)
+		{
+			if (Counter >= 130)
+			{
+				OutPutText.Append("</br>");
+				Counter = 0;
+			}
+			OutPutText.Append(c);
+			Counter++;
+		}
+		MessageWithBreakLines = OutPutText.ToString();
+		return MessageWithBreakLines;
 	}
 }
