@@ -4,22 +4,15 @@
     text-align:center;
 }
 
-#FrirendsOnline, #UserSettings, .Home-Form {
+#FrirendsOnline{
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.Home-Form {
-    margin: 50px 0px;
-    background-color: rgb(51,51,51);
-    border-radius: 15px;
-    padding: 10px 0px;
-}
-
-#LastetMessages, #FrirendsOnline, #UserSettings {
-    width: 20%;
+#LastetMessages, #FrirendsOnline{
+    width: 30%;
     height: 100vh;
     float: left;
     padding-top: 50px;
@@ -138,12 +131,6 @@
 }
 
 input[type="text"] {
-    background-color: rgb(179, 179, 179);
-    margin: 0px;
-    width: 100%;
-}
-
-input[type="password"] {
     background-color: rgb(179, 179, 179);
     margin: 0px;
     width: 100%;

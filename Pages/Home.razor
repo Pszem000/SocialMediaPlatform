@@ -14,41 +14,12 @@
 @inject UserManager<UserModel> _userManager
 @inject IUserGetter _UserGetter
 @inject IMessageGetter _MessageGetter
-@inject IEmailSender _EmailSender
-@inject SignInManager<UserModel> _SignInManager
 
 <link href="css/HomeStyle.css" rel="stylesheet">
 <PageTitle>Home</PageTitle>
 
 @if (LoggedUser != null)
 {
-	<div id="UserSettings">
-		<h1>@LoggedUser.UserName</h1>
-		<form action="/Account/LogOut" method="get">
-			<button class="UserList-Button" @onclick="@(() => LogOut())">LogOut</button>
-		</form>
-
-		<form action="/Password/ChangePasswordByPassword" method="post" class="Home-Form">
-			<input type="hidden" value="@LoggedUser.Id" name="UserId"/>
-			<h3>CHANGE PASSWORD</h3>
-			<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
-			<br />
-			<span class="ChangePassword-Span">New password<input class="InputSearch" name="NewPassword" type="password" /></span>
-			<br />
-			<button class="UserList-Button" type="submit">Change Password</button>
-
-		</form>
-		<form action="/Username/ChangeUsername" method="post" class="Home-Form">
-			<input type="hidden" value="@LoggedUser.Id" name="UserId" />
-			<h3>CHANGE USERNAME</h3>
-			<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
-			<br />
-			<span class="ChangePassword-Span">New username<input class="InputSearch" name="NewUsername" type="text" /></span>
-			<br />
-			<button class="UserList-Button" type="submit">Change Username</button>
-
-		</form>
-	</div>
 	<div id="LastetMessages">
 		<h2>Lastet messages</h2>
 		@if (UserList != null && UserList.Count != 0)
@@ -246,8 +217,5 @@
 			UnreadMessageCounts[user.Id] = await CountUnreadMessages(user);
 		}
 	}
-	private async Task LogOut()
-	{
-		await _SignInManager.SignOutAsync();
-	}
+
 }

@@ -1,0 +1,50 @@
+﻿@page "/Account"
+@using Microsoft.AspNetCore.Identity
+@using SocialMediaPlatform.Models
+@using SocialMediaPlatform.Services.Interfaces
+@inject IUserGetter _UserGetter
+@inject SignInManager<UserModel> _SignInManager
+<link href="css/Account.css" rel="stylesheet">
+@if(LoggedUser != null)
+{
+
+<div id="UserSettings">
+	<h1>@LoggedUser.UserName</h1>
+	<form action="/Account/LogOut" method="get">
+		<button class="Button" @onclick="@(() => LogOut())">LogOut</button>
+	</form>
+
+	<form action="/Password/ChangePasswordByPassword" method="post" class="Home-Form">
+		<input type="hidden" value="@LoggedUser.Id" name="UserId" />
+		<h3>CHANGE PASSWORD</h3>
+		<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
+		<br />
+		<span class="ChangePassword-Span">New password<input class="InputSearch" name="NewPassword" type="password" /></span>
+		<br />
+		<button class="Button" type="submit">Change Password</button>
+
+	</form>
+	<form action="/Username/ChangeUsername" method="post" class="Home-Form">
+		<input type="hidden" value="@LoggedUser.Id" name="UserId" />
+		<h3>CHANGE USERNAME</h3>
+		<span class="ChangePassword-Span">Current password<input class="InputSearch" name="CurrentPassword" type="password" /></span>
+		<br />
+		<span class="ChangePassword-Span">New username<input class="InputSearch" name="NewUsername" type="text" /></span>
+		<br />
+		<button class="Button" type="submit">Change Username</button>
+
+	</form>
+</div>
+
+}
+@code{
+	private UserModel LoggedUser;
+	protected override async Task OnInitializedAsync()
+	{
+		LoggedUser = await _UserGetter.GetLoggedUser();
+	}
+	private async Task LogOut()
+	{
+		await _SignInManager.SignOutAsync();
+	}
+}

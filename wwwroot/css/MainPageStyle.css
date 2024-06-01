@@ -7,10 +7,9 @@
 #MainPage-Posts {
     width: 80%;
     float: right;
-
+    
     max-height: 80%;
     flex-direction: column;
-    overflow-y: auto;
     display: flex;
     text-align: center;
 }
@@ -32,6 +31,7 @@
     align-items: center;
     text-align: center;
     height: 20%;
+    margin:10px
 }
 #Add-Post-Content{
     width: 30%;
@@ -60,7 +60,8 @@ input[type="text"] {
     height: 20px;
 }
 #PostsBlock {
-  
+    overflow-y: auto;
+    max-height:80vh;
 }
 .Post {
     width: 50%;
