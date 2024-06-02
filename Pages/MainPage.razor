@@ -1,18 +1,53 @@
-﻿@page "/MainPage"
+﻿@page "/"
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services
 @using SocialMediaPlatform.Services.Interfaces
 @using System.Text
+@inject IMessageGetter _MessageGetter;
+@inject NavigationManager Navigation
 @inject IPostsService _PostService;
 @inject IPostGetter _PostGetter;
 @inject IUserGetter _UserGetter;
 @inject ILikeGetter _LikeGetter;
 @inject ILikeService _LikeService;
 @inject IJSRuntime JSRunTime;
-
+<PageTitle>Home</PageTitle>
 <link href="css/MainPageStyle.css" rel="stylesheet">
 <div id="MainPage-OtherThings">
-	<p>TEST</p>
+	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Account"))">Account</button>
+	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Home"))">Messenger</button>
+	<div id="LastetMessages">
+		<h2>Lastet messages</h2>
+		@if (UserList != null && UserList.Count != 0)
+		{
+			@foreach (var User in UserList)
+			{
+				<div class="UserList-User">
+					<div class="UserList-PhotoContainer">
+						@if (UnreadMessageCounts.ContainsKey(User.Id) && UnreadMessageCounts[User.Id] != 0)
+						{
+							<span class="UnreadMessagesNotification">@UnreadMessageCounts[User.Id]</span>
+							<img class="UserList-PhotoWithNotification" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+						}
+						else
+						{
+							<img class="UserList-Photo" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+						}
+
+					</div>
+					@if (User.UserName.Length > 20)
+					{
+						<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName.Substring(0, 20)...</button>
+					}
+					else
+					{
+						<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName</button>
+					}
+
+				</div>
+			}
+		}
+	</div>
 </div>
 <div id="MainPage-Posts">
 <div id="AddPost">
@@ -70,11 +105,14 @@
 	private List<PostModel> PostsList;
 	private UserModel User;
 	private string PostContent;
+	private List<UserModel> UserList = new List<UserModel>();
+	private Dictionary<string, int> UnreadMessageCounts = new Dictionary<string, int>();
 	private Dictionary<PostModel, string> PostsDict = new Dictionary<PostModel, string>();
 
 	protected override async Task OnInitializedAsync()
 	{
 		User = await _UserGetter.GetLoggedUser();
+		UserList = await _UserGetter.GetUsers(User.Id);
 		await GetPosts();
 		foreach (var Post in PostsList)
 		{
@@ -159,5 +197,15 @@
 		}
 		MessageWithBreakLines = OutPutText.ToString();
 		return MessageWithBreakLines;
+	}
+	private void RedirectToPage(string Url)
+	{
+		Navigation.NavigateTo(Url, forceLoad: true);
+	}
+	private async Task<int> CountUnreadMessages(UserModel User)
+	{
+		var UnreadMessages = await _MessageGetter.GetMessages(User.Id, User.Id);
+		UnreadMessages = UnreadMessages.Where(x => x.IsRead == false && x.CreatorId == User.Id).ToList();
+		return UnreadMessages.Count;
 	}
 }

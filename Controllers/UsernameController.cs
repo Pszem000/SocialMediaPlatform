@@ -34,7 +34,7 @@ namespace SocialMediaPlatform.Controllers
 					}
 				}
 			}
-			return Redirect("/");
+			return Redirect("/Account");
 		}
 	}
 }
