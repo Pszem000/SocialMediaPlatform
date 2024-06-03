@@ -46,8 +46,7 @@
         AddCommentButton.textContent = "Add";
         AddCommentButton.onclick = function () {
             var Content = document.getElementById("AddComment-Input-" + PostId).value;
-            var FixedContnet = addBreakLines(Content);
-            fetch(`/Comments/AddComment?Content=${FixedContnet}&PostId=${PostId}`);
+            fetch(`/Comments/AddComment?Content=${Content }&PostId=${PostId}`);
             document.getElementById("AddComment-Input-" + PostId).value = ""; 
         }
         AddCommentButtonContainer.appendChild(AddCommentButton);

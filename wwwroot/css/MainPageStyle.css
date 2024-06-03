@@ -6,9 +6,8 @@
 }
 #MainPage-Posts {
     width: 80%;
-    float: right;
-    
-    max-height: 80%;
+    float: right; 
+    max-height: 100%;
     flex-direction: column;
     display: flex;
     text-align: center;
@@ -74,7 +73,7 @@ input[type="text"] {
 }
 #PostsBlock {
     overflow-y: auto;
-    max-height:80vh;
+    max-height:100vh;
 }
 .Post {
     width: 50%;

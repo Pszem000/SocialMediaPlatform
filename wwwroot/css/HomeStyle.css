@@ -41,8 +41,11 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-}
 
+}
+.pickuser {
+    align-items: center;
+}
 .pickuser {
     float: left;
     width: 40%;
@@ -61,7 +64,7 @@
     margin: 10px;
     align-self: center;
     display: table;
-    width: 20%;
+    width: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -145,4 +148,15 @@ input[type="text"] {
     border: 3px solid;
     border-color: rgb(115,115,115);
     border-radius: 5px;
+}
+#Button-Redirect-MainPage {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: table;
+    text-align: center;
+    width:30%;
+    margin:30px;
 }

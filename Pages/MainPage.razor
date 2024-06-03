@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services
 @using SocialMediaPlatform.Services.Interfaces
@@ -11,11 +12,13 @@
 @inject ILikeGetter _LikeGetter;
 @inject ILikeService _LikeService;
 @inject IJSRuntime JSRunTime;
+@attribute [Authorize]
+@implements IAsyncDisposable
 <PageTitle>Home</PageTitle>
 <link href="css/MainPageStyle.css" rel="stylesheet">
 <div id="MainPage-OtherThings">
 	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Account"))">Account</button>
-	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Home"))">Messenger</button>
+	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Messenger"))">Messenger</button>
 	<div id="LastetMessages">
 		<h2>Lastet messages</h2>
 		@if (UserList != null && UserList.Count != 0)
@@ -50,15 +53,14 @@
 	</div>
 </div>
 <div id="MainPage-Posts">
-<div id="AddPost">
-	<h2>Add Post</h2>
-	<br />
-	<input type="text" id="Add-Post-Content" placeholder="Enter Content" @bind="PostContent" />
-	<br />
-	<button id="Add-Post-Button" @onclick="SavePost">Add</button>
-</div>
-
 <div id="PostsBlock">
+		<div id="AddPost">
+			<h2>Add Post</h2>
+			<br />
+			<input type="text" id="Add-Post-Content" placeholder="Enter Content" @bind="PostContent" />
+			<br />
+			<button id="Add-Post-Button" @onclick="SavePost">Add</button>
+		</div>
 	@if (PostsList != null)
 	{
 		foreach (var Post in PostsDict)
@@ -105,29 +107,56 @@
 	private List<PostModel> PostsList;
 	private UserModel User;
 	private string PostContent;
+	private HubConnection? _HubConnection;
 	private List<UserModel> UserList = new List<UserModel>();
 	private Dictionary<string, int> UnreadMessageCounts = new Dictionary<string, int>();
 	private Dictionary<PostModel, string> PostsDict = new Dictionary<PostModel, string>();
 
 	protected override async Task OnInitializedAsync()
 	{
-		User = await _UserGetter.GetLoggedUser();
-		UserList = await _UserGetter.GetUsers(User.Id);
-		await GetPosts();
-		foreach (var Post in PostsList)
+		User = await _UserGetter.GetLoggedUser();		
+		if(User == null)
 		{
-			if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
-			{
-				PostsDict[Post] = "/Icons/Like-Icon2.png";
-			}
-			else
-			{
-				PostsDict[Post] = "/Icons/Like-Icon1.png";
-			}
+			RedirectToPage("/Account/Login");
 		}
+		else
+		{
+			UserList = await _UserGetter.GetUsers(User.Id);
+			await GetPosts();
+			foreach (var Post in PostsList)
+			{
+				if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
+				{
+					PostsDict[Post] = "/Icons/Like-Icon2.png";
+				}
+				else
+				{
+					PostsDict[Post] = "/Icons/Like-Icon1.png";
+				}
+			}
+
+			_HubConnection = new HubConnectionBuilder()
+			.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+			{
+				options.Headers["UserId"] = User.Id;
+			})
+			.Build();
+
+			await _HubConnection.StartAsync();
+
+			await _HubConnection.InvokeAsync("JoinGroup", User.Id);
+
+		}
+		
 	}
 
-
+	public async ValueTask DisposeAsync()
+	{
+		if (_HubConnection != null)
+		{
+			await _HubConnection.DisposeAsync();
+		}
+	}
 	private async Task AddLike(string PostId)
 	{
 

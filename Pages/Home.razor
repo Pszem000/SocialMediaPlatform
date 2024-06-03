@@ -53,10 +53,10 @@
 		}
 	</div>
 	<div class="pickuser">
+		<button id="Button-Redirect-MainPage" @onclick="@(() =>  RedirectToPage("/"))">Main Page</button>
 		<h1>Find friends</h1>
-
 		<div class="input">
-			<input class="InputSearch" style="width:40%;" type="text" @bind="KeyWords" />
+			<input class="InputSearch" type="text" @bind="KeyWords" />
 			<button id="ButtonSearch" @onclick="@(() =>  GetUsers())">Find</button>
 		</div>
 
