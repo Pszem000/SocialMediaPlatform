@@ -30,11 +30,11 @@
 						@if (UnreadMessageCounts.ContainsKey(User.Id) && UnreadMessageCounts[User.Id] != 0)
 						{
 							<span class="UnreadMessagesNotification">@UnreadMessageCounts[User.Id]</span>
-							<img class="UserList-PhotoWithNotification" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+							<img class="UserList-PhotoWithNotification" src="@User.ProfileImageSrc" />
 						}
 						else
 						{
-							<img class="UserList-Photo" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+							<img class="UserList-Photo" src="@User.ProfileImageSrc" />
 						}
 
 					</div>

@@ -1,5 +1,5 @@
 
-function AddMessageToViewWithImageId(message, ElementClassNameMess, ProfileId, ElementClassNameImg, MessageId) {
+function AddMessageToViewWithImageId(message, ElementClassNameMess, ProfileSrc, ElementClassNameImg, MessageId) {
     var MessageImgContainer = document.createElement("div");
     var ImgContainer = document.createElement("div");
     var MessContainer = document.createElement("div");
@@ -20,7 +20,7 @@ function AddMessageToViewWithImageId(message, ElementClassNameMess, ProfileId, E
     MessageContainerChild.appendChild(ImgContainer);
 
     var imgElement = document.createElement("img");
-    imgElement.src = "/DisplayImage/" + ProfileId;
+    imgElement.src = ProfileSrc;
     imgElement.id = MessageId;
     ImgContainer.className = ElementClassNameImg;
     imgElement.className = "photo";

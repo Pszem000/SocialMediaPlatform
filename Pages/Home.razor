@@ -31,11 +31,11 @@
 						@if (UnreadMessageCounts.ContainsKey(User.Id) && UnreadMessageCounts[User.Id] != 0)
 						{
 							<span class="UnreadMessagesNotification">@UnreadMessageCounts[User.Id]</span>
-							<img class="UserList-PhotoWithNotification" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+							<img class="UserList-PhotoWithNotification" src="@User.ProfileImageSrc" />
 						}
 						else
 						{
-							<img class="UserList-Photo" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+							<img class="UserList-Photo" src="@User.ProfileImageSrc" />
 						}
 
 					</div>
@@ -69,7 +69,7 @@
 				{
 					<div class="UserList-User">
 						<div class="FindUser-PhotoContainer">
-							<img class="UserList-Photo UserPhoto" src="@($"/DisplayImage/{User.ProfileImageId}")" />
+							<img class="UserList-Photo UserPhoto" src="@User.ProfileImageSrc" />
 						</div>
 
 						@if (User.UserName.Length > 20)
@@ -96,7 +96,7 @@
 			{
 
 				<div class="UserList-User">
-					<img id="UserPhoto" class="UserList-Photo" src="@($"/DisplayImage/{user.ProfileImageId}")" />
+					<img id="UserPhoto" class="UserList-Photo" src="@LoggedUser.ProfileImageSrc" />
 					<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{user.Id}"))">@user.UserName</button>
 				</div>
 			}

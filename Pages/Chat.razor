@@ -23,7 +23,7 @@
 			<button class="ButtonLayOut" @onclick="@(() => RedirectToPage("/"))">Main Page</button>
 		</div>
 		<div id="ImgAndUsername">
-			<img id="UserPhoto" src="@($"/DisplayImage/{Receiver.ProfileImageId}")" />
+			<img id="UserPhoto" src="@User.ProfileImageSrc" />
 			<h3 id="Username-Chat">@Receiver.UserName</h3>
 		</div>
 	</div>
@@ -64,7 +64,7 @@
 
 		_HubConnection.On<string, string>("ReciveNotification", async (Message, MessageId) =>
 			{
-				AddMessageToViewWithImageId(AddBreakLines(Message), "ReciverMessages", Receiver.ProfileImageId.ToString(), "ReciverImg", MessageId);
+				AddMessageToViewWithImageId(AddBreakLines(Message), "ReciverMessages", Receiver.ProfileImageSrc, "ReciverImg", MessageId);
 
 				JSRuntime.InvokeVoidAsync("scrollToBottom");
 				await _HubConnection.InvokeAsync("ReadMessages", Receiver.Id);
@@ -127,7 +127,7 @@
 				else
 				{
 
-					AddMessageToViewWithImageId(AddBreakLines(Message.Content), "ReciverMessages", Receiver.ProfileImageId.ToString(), "ReciverImg", Message.Id.ToString());
+					AddMessageToViewWithImageId(AddBreakLines(Message.Content), "ReciverMessages", Receiver.ProfileImageSrc, "ReciverImg", Message.Id.ToString());
 				}
 
 			}

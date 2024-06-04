@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Azure.Documents;
+using Microsoft.EntityFrameworkCore;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
 namespace SocialMediaPlatform.Services
@@ -6,30 +7,24 @@ namespace SocialMediaPlatform.Services
 	public class ImageSaver : IImageSaver
 	{
 		private readonly AppDbContext _Context;
-		private MemoryStream MemoryStream = new MemoryStream();
-		public ImageSaver(AppDbContext Context)
+		private readonly IUserGetter _UserGetter;
+		public ImageSaver(AppDbContext Context,IUserGetter userGetter)
 		{
 			_Context = Context;
+			_UserGetter = userGetter;
 		}
 
 		public async Task SaveImage(IFormFile File, string UserId)
 		{
-			File.CopyTo(MemoryStream);
+			var FilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProfileImages", $"ProfileImage_{UserId}.jpg");
 
-			var Image = new ImageModel
+			using (var stream = new FileStream(FilePath, FileMode.Create))
 			{
-				image = MemoryStream.ToArray(),
-				ContentType = File.ContentType,
-				UserId = UserId
-
-			};
-
-			_Context.ImageList.Add(Image);
-			_Context.SaveChanges();
-
-			var User = await _Context.Users.Where(x => x.Id == UserId).FirstAsync();
-			User.ProfileImageId = Image.Id;
-			_Context.SaveChanges();
+				await File.CopyToAsync(stream);
+			}
+			var User = await _UserGetter.GetLoggedUser();
+			User.ProfileImageSrc = FilePath;
+			await _Context.SaveChangesAsync();
 		}
 	}
 }

@@ -64,6 +64,10 @@ namespace SocialMediaPlatform.Controllers
 					{
 						await _ImageSaver.SaveImage(ProfileImage, NewUser.Id);
 					}
+					else
+					{
+						NewUser.ProfileImageSrc = "/wwwroot/ProfileImages/DefaultProfileImage";
+					}
 
 					await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
 
