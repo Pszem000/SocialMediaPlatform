@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
+using System.Configuration;
 namespace SocialMediaPlatform.Services
 {
 	public class ImageSaver : IImageSaver
@@ -22,7 +23,7 @@ namespace SocialMediaPlatform.Services
 			{
 				await File.CopyToAsync(stream);
 			}
-			var User = await _UserGetter.GetLoggedUser();
+			var User = await _UserGetter.GetUserById(UserId);
 			User.ProfileImageSrc = FilePath;
 			await _Context.SaveChangesAsync();
 		}

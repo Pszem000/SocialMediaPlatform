@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialMediaPlatform;
 
@@ -11,9 +12,10 @@ using SocialMediaPlatform;
 namespace SocialMediaPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240606054957_changed_ProfileImageId_to_ProfileImageSrc")]
+    partial class changed_ProfileImageId_to_ProfileImageSrc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -326,6 +328,7 @@ namespace SocialMediaPlatform.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfileImageSrc")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecoveryCode")

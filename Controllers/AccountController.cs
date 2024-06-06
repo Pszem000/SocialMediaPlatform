@@ -4,6 +4,7 @@ using Microsoft.Azure.Documents;
 using SocialMediaPlatform;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
+using System.Configuration;
 
 
 namespace SocialMediaPlatform.Controllers
@@ -19,8 +20,10 @@ namespace SocialMediaPlatform.Controllers
 		private readonly IRecoveryCodeGetter _RecoveryCodeGetter;
 		private readonly IRecoveryCodeGenerator _RecoveryCodeGenerator;
 		private readonly IEmailSender _EmailSender;
+		private readonly string DefaultImagePath;
 
-		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter)
+
+		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration)
 		{
 			_UserManager = UserManager;
 			_SignInManager = SignInManager;
@@ -31,6 +34,7 @@ namespace SocialMediaPlatform.Controllers
 			_RecoveryCodeGetter = RecoveryCodeGetter;
 			_RecoveryCodeGenerator = RecoveryCodeGenerator;
 			_EmailSender = EmailSender;
+			DefaultImagePath = Configuration.GetValue<string>("AppSettings:DefaultImagePath");
 		}
 		[HttpGet]
 		public IActionResult Register()
@@ -66,7 +70,8 @@ namespace SocialMediaPlatform.Controllers
 					}
 					else
 					{
-						NewUser.ProfileImageSrc = "/wwwroot/ProfileImages/DefaultProfileImage";
+						NewUser.ProfileImageSrc = DefaultImagePath;
+						await _Context.SaveChangesAsync();
 					}
 
 					await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
