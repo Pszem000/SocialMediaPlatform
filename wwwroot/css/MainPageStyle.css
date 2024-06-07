@@ -35,7 +35,9 @@
     margin:20px;
 }
 .Creator-Img {
-    width: 50px;
+    width: 30px;
+    border-radius:100%;
+    border:none;
 }
 #AddPost {
     display: flex;

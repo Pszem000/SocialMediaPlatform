@@ -24,7 +24,7 @@ namespace SocialMediaPlatform.Services
 				await File.CopyToAsync(stream);
 			}
 			var User = await _UserGetter.GetUserById(UserId);
-			User.ProfileImageSrc = FilePath;
+			User.ProfileImageSrc = $"/ProfileImages/ProfileImage_{UserId}.jpg";
 			await _Context.SaveChangesAsync();
 		}
 	}

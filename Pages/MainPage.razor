@@ -46,7 +46,6 @@
 					{
 						<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{User.Id}"))">@User.UserName</button>
 					}
-
 				</div>
 			}
 		}
@@ -68,7 +67,7 @@
 			<div class="Post" id="Post-@Post.Key.Id">
 				<div class="CreatorContainer">
 					<div class="Creator-Img-Block">
-							<img class="Creator-Img" src="/ProfileImages/DefaultProfile.jpg">
+							<img class="Creator-Img" src="@Post.Key.Creator.ProfileImageSrc">
 					</div>
 					<div class="Creator-Name-Block">
 						@Post.Key.Creator.UserName

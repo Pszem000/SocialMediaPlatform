@@ -5,7 +5,11 @@ namespace SocialMediaPlatform.Models
 	{
 		public bool IsOnline { get; set; }
 		public string? RecoveryCode { get; set; }
-		public ICollection<LikeModel> Likes { get; set; }
+		public List<LikeModel> Likes { get; set; }
 		public string? ProfileImageSrc { get; set; }
+		public int NumberOfFollowers { get; set; }
+		public int NumberOfFollowing { get; set;}
+		public List<FollowModel> Followers { get; set;}
+		public List<FollowModel> FollowedUsers {  get; set; }
 	}
 }
