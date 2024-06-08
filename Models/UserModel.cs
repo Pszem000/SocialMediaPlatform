@@ -11,5 +11,6 @@ namespace SocialMediaPlatform.Models
 		public int NumberOfFollowing { get; set;}
 		public List<FollowModel> Followers { get; set;}
 		public List<FollowModel> FollowedUsers {  get; set; }
+		public string Bio { get; set; }
 	}
 }

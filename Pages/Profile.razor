@@ -1,0 +1,54 @@
+﻿@page "/Profile/{UserId}"
+@using SocialMediaPlatform.Models
+@using SocialMediaPlatform.Services.Interfaces
+@attribute [Authorize]
+@inject IUserGetter _UserGetter;
+@if(LoggedUser != null)
+{
+	<PageTitle>Profile @LoggedUser.UserName</PageTitle>
+	<div id="UserInfo">
+		<div id="UserPhoto-Container">
+			<img id="UserPhoto" src="@LoggedUser.ProfileImageSrc"/>	
+		</div>
+		<div id="Username-Container">
+			<p id="Username">@LoggedUser.UserName</p>
+		</div>
+		<div id="UserBio-Conatiner">
+			<p id="UserBio">@LoggedUser.Bio</p>
+		</div>
+		<div id="User-Followers">
+			<p>@LoggedUser.NumberOfFollowers</p>
+		</div>
+		@if(UserHaveFollow)
+		{
+			<div id="UnFollowButton-Container">
+				<button id="UnFollow-Button">UnFollow</button>
+			</div>
+		}
+		else
+		{
+			<div id="FollowButton-Container">
+				<button id="Follow-Button">Follow</button>
+			</div>
+		}	
+		<div id="DirectMessageButton-Container">
+			<button id="DirectMessage-Button">Open Chat</button>
+		</div>
+
+	</div>
+	<div id="UserPosts">
+		
+	</div>
+}
+
+@code{
+	[Parameter] public string UserId { get; set; }
+	private UserModel LoggedUser;
+	private UserModel User;
+	private bool UserHaveFollow;
+	protected override async Task OnInitializedAsync()
+	{
+		LoggedUser = await _UserGetter.GetLoggedUser();
+		User = await _UserGetter.GetUserById(UserId);
+	}
+}
