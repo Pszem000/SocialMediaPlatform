@@ -3,6 +3,8 @@
 @using SocialMediaPlatform.Services.Interfaces
 @attribute [Authorize]
 @inject IUserGetter _UserGetter;
+@inject IFollowGetter _FollowGetter;
+@inject IFollowService _FollowService;
 @if(LoggedUser != null)
 {
 	<PageTitle>Profile @LoggedUser.UserName</PageTitle>
@@ -22,13 +24,13 @@
 		@if(UserHaveFollow)
 		{
 			<div id="UnFollowButton-Container">
-				<button id="UnFollow-Button">UnFollow</button>
+				<button id="UnFollow-Button" @onclick="@(() => RemoveFollow())">UnFollow</button>
 			</div>
 		}
 		else
 		{
 			<div id="FollowButton-Container">
-				<button id="Follow-Button">Follow</button>
+				<button id="Follow-Button" @onclick="@(() => AddFollow())">Follow</button>
 			</div>
 		}	
 		<div id="DirectMessageButton-Container">
@@ -50,5 +52,25 @@
 	{
 		LoggedUser = await _UserGetter.GetLoggedUser();
 		User = await _UserGetter.GetUserById(UserId);
+
+		var Follow = await _FollowGetter.GetCurrentFollow(LoggedUser.Id, UserId);
+		if(Follow != null)
+		{
+			UserHaveFollow = true;
+		}
+	}
+	public async Task AddFollow()
+	{
+		if (!UserHaveFollow)
+		{
+			await _FollowService.AddFollow(LoggedUser.Id, UserId);
+		}
+	}
+	public async Task RemoveFollow()
+	{
+		if(UserHaveFollow)
+		{
+			await _FollowService.RemoveFollow(LoggedUser.Id, UserId);
+		}
 	}
 }
