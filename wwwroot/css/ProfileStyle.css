@@ -1,0 +1,40 @@
+﻿body {
+    background: rgb(64, 64, 64);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+#UserPhoto {
+    width: 50px;
+    border-radius: 100%;
+    float: left;
+    margin-left: 46%;
+}
+#UsernameAndPhoto-Container{
+    margin:10px;
+}
+#Username {
+    float: left;
+    margin:5px 15px;
+    font-size:30px;
+}
+#UserInfo {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    height: 20%;
+
+}
+#Followers,#Following{
+    margin:20px;
+}
+#Follow-Button, #UnFollow-Button, #DirectMessage-Button {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    width: 5%;
+    height: 30px;
+    color: white;
+    margin: 20px;
+}

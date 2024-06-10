@@ -80,3 +80,7 @@ function AddComment(PostId, CreatorName, Content) {
     CommentBlock.appendChild(CommentDiv);
 }
 
+function ChangePhoto(ElementId, NewSrc) {
+    var photo = document.getElementById(ElementId);
+    photo.src = NewSrc;
+}

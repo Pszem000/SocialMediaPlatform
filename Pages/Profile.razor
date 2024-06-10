@@ -5,38 +5,33 @@
 @inject IUserGetter _UserGetter;
 @inject IFollowGetter _FollowGetter;
 @inject IFollowService _FollowService;
-@if(LoggedUser != null)
+@inject IJSRuntime JSRuntime;
+<link href="css/ProfileStyle.css" rel="stylesheet">
+@if (User != null)
 {
-	<PageTitle>Profile @LoggedUser.UserName</PageTitle>
+	<PageTitle>Profile @User.UserName</PageTitle>
 	<div id="UserInfo">
-		<div id="UserPhoto-Container">
-			<img id="UserPhoto" src="@LoggedUser.ProfileImageSrc"/>	
-		</div>
-		<div id="Username-Container">
-			<p id="Username">@LoggedUser.UserName</p>
+		<div id="UsernameAndPhoto-Container">
+			<img id="UserPhoto" src="@User.ProfileImageSrc" />
+			<p id="Username">@User.UserName</p>
+	
 		</div>
 		<div id="UserBio-Conatiner">
-			<p id="UserBio">@LoggedUser.Bio</p>
+			<p id="UserBio">@User.Bio</p>
 		</div>
-		<div id="User-Followers">
-			<p>@LoggedUser.NumberOfFollowers</p>
+		<div id="Followers-Container">
+			<span id="Followers">Follower: @User.NumberOfFollowers</span>
+			<span id="Following">Following: @User.NumberOfFollowing</span>
 		</div>
-		@if(UserHaveFollow)
+		
+		@if(CanFollow)
 		{
-			<div id="UnFollowButton-Container">
-				<button id="UnFollow-Button" @onclick="@(() => RemoveFollow())">UnFollow</button>
+			<div id="Buttons-Container">			
+				<button id="Follow-Button" class="Follow" @onclick="@(() => ChangeFollow())">Follow</button>		
+				<button id="DirectMessage-Button">Open Chat</button>
 			</div>
 		}
-		else
-		{
-			<div id="FollowButton-Container">
-				<button id="Follow-Button" @onclick="@(() => AddFollow())">Follow</button>
-			</div>
-		}	
-		<div id="DirectMessageButton-Container">
-			<button id="DirectMessage-Button">Open Chat</button>
-		</div>
-
+		
 	</div>
 	<div id="UserPosts">
 		
@@ -48,29 +43,55 @@
 	private UserModel LoggedUser;
 	private UserModel User;
 	private bool UserHaveFollow;
+	private bool CanFollow = true;
 	protected override async Task OnInitializedAsync()
 	{
 		LoggedUser = await _UserGetter.GetLoggedUser();
 		User = await _UserGetter.GetUserById(UserId);
+		if(UserId == LoggedUser.Id)
+		{
+			CanFollow = false;
+		}
+		if (CanFollow)
+		{
+			await CheckFollow();
+			if (UserHaveFollow)
+			{
+				await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
+			}
+			else
+			{
+				await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "Follow");
+			}
+		}
+	}
+	public async Task ChangeFollow()
+	{
+		await CheckFollow();
+		if (UserHaveFollow)
+		{
+			await _FollowService.RemoveFollow(LoggedUser.Id, UserId);
+			await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "Follow");
+		}
+		else
+		{
+			await _FollowService.AddFollow(LoggedUser.Id, UserId);
+			await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
+		}
 
+	}
+
+	public async Task CheckFollow()
+	{
 		var Follow = await _FollowGetter.GetCurrentFollow(LoggedUser.Id, UserId);
-		if(Follow != null)
+		if (Follow == null)
+		{
+			UserHaveFollow = false;
+		}
+		else
 		{
 			UserHaveFollow = true;
 		}
-	}
-	public async Task AddFollow()
-	{
-		if (!UserHaveFollow)
-		{
-			await _FollowService.AddFollow(LoggedUser.Id, UserId);
-		}
-	}
-	public async Task RemoveFollow()
-	{
-		if(UserHaveFollow)
-		{
-			await _FollowService.RemoveFollow(LoggedUser.Id, UserId);
-		}
+		StateHasChanged();
 	}
 }
