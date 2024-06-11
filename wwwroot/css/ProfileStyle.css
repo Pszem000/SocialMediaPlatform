@@ -22,7 +22,7 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    height: 20%;
+    max-height: 20vh;
 
 }
 #Followers,#Following{
@@ -37,4 +37,176 @@
     height: 30px;
     color: white;
     margin: 20px;
+}
+#MainPage-Posts {
+  
+}
+
+.Creator-Img {
+    width: 30px;
+    border-radius: 100%;
+    border: none;
+}
+
+.Like-Icon-Img, .Comment-Icon-Img {
+    margin: 5px;
+    height: 20px;
+}
+
+#UserPosts {
+    overflow-y: auto;
+    max-height: 800vh;
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+    text-align: center;
+}
+
+.Post {
+    width: 50%;
+    background: rgb(52,52,52);
+    margin: 40px 25%;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10px;
+    border-radius: 5px;
+}
+
+.Post-Contnet-Block {
+    width: 100%;
+}
+
+.Post-Content {
+    height: 10%;
+    min-height: 10%;
+    max-height: 60%;
+    width: 100%;
+    text-align: left;
+    background: rgb(58,58,58);
+    padding: 5px;
+}
+
+.Comments-Stats, .Likes {
+    float: left;
+    width: 50%;
+}
+
+.Post-Reaction-Block {
+    height: 60px;
+    width: 100%;
+}
+
+.CreatorContainer {
+    height: 15%;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    display: flex;
+}
+
+.Creator-Img-Block {
+    float: left;
+    margin: 10px;
+}
+
+.Creator-Name-Block {
+    float: left;
+    margin-left: 40%;
+}
+
+.Like-Button, .Comment-Icon {
+    background-color: transparent;
+    border: none;
+}
+
+.Comment-Block {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    margin: 10px;
+    background: rgb(58,58,58);
+}
+
+.CloseButton {
+    height: 15px;
+    width: 15px;
+    margin: 0px 15px;
+    border: none;
+    background-color: transparent;
+}
+
+.CloseIcon {
+    height: 15px;
+    width: 15px;
+}
+
+.CloseButton-Container {
+    float: right;
+    margin: 5px 0px;
+}
+
+.Comment {
+    background: rgb(52,52,52);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    width: 99%;
+}
+
+.Comment-Content, .Comment-CreatorName {
+    margin: 10px;
+    text-align: left;
+}
+
+.CommentContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-height: 250px;
+    overflow: auto;
+}
+
+.AddCommentButton {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    width: 100%;
+    height: 30px;
+    color: white;
+    margin: 10px 0px;
+}
+
+.AddComment-Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.AddComment-Input {
+    height: 40px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: rgba(0,0,0,0);
+}
+
+::-webkit-scrollbar-thumb {
+    width: 12px;
+    background-color: rgb(52, 52, 52);
+    border-radius: 15px;
+}
+input[type="text"] {
+    background-color: rgb(64, 64, 64);
+    border: 3px solid;
+    border-color: rgb(115,115,115);
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
 }

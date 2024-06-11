@@ -21,5 +21,10 @@ namespace SocialMediaPlatform.Services
 			var Post = await _Context.Posts.Where(x => x.Id == PostId).Include(x => x.Creator).Include(x => x.Likes).Include(x => x.Comments).FirstOrDefaultAsync();
 			return Post;
 		}
+		public async Task<List<PostModel>> GetPostsByCreatorId(string CreatorId)
+		{
+			var Posts = await _Context.Posts.Where(x => x.CreatorId == CreatorId).Include(x => x.Creator).Include(x => x.Likes).Include(x => x.Comments).ToListAsync();
+			return Posts;
+		}
 	}
 }

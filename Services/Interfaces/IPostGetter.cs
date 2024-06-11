@@ -6,5 +6,6 @@ namespace SocialMediaPlatform.Services.Interfaces
 	{
 		public Task<List<PostModel>> GetPosts();
 		public Task<PostModel> GetPostsById(string PostId);
+		public Task<List<PostModel>> GetPostsByCreatorId(string CreatorId);
 	}
 }

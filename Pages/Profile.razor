@@ -1,11 +1,16 @@
 ﻿@page "/Profile/{UserId}"
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services.Interfaces
+@using System.Text
 @attribute [Authorize]
 @inject IUserGetter _UserGetter;
 @inject IFollowGetter _FollowGetter;
 @inject IFollowService _FollowService;
-@inject IJSRuntime JSRuntime;
+@inject IJSRuntime JSRunTime;
+@inject NavigationManager Navigation
+@inject IPostGetter _PostGetter;
+@inject ILikeService _LikeService;
+@inject ILikeGetter _LikeGetter;
 <link href="css/ProfileStyle.css" rel="stylesheet">
 @if (User != null)
 {
@@ -27,14 +32,53 @@
 		@if(CanFollow)
 		{
 			<div id="Buttons-Container">			
-				<button id="Follow-Button" class="Follow" @onclick="@(() => ChangeFollow())">Follow</button>		
-				<button id="DirectMessage-Button">Open Chat</button>
+				<button id="Follow-Button" class="Follow" @onclick="@(() => ChangeFollow())">Follow</button>
+				<button id="DirectMessage-Button" @onclick='() => RedirectToPage($"/Chat/{UserId}")'>Open Chat</button>
 			</div>
 		}
 		
 	</div>
 	<div id="UserPosts">
-		
+		@if (PostsList != null)
+		{
+			foreach (var Post in PostsDict)
+			{
+				<div class="Post" id="Post-@Post.Key.Id">
+					<div class="CreatorContainer">
+						<div class="Creator-Img-Block">
+							<img class="Creator-Img" src="@Post.Key.Creator.ProfileImageSrc">
+						</div>
+						<div class="Creator-Name-Block">
+							<p @onclick='() => RedirectToPage($"/Profile/{Post.Key.CreatorId}")'>@Post.Key.Creator.UserName</p>
+						</div>
+					</div>
+					<div class="Post-Contnet-Block">
+						<p class="Post-Content">@Post.Key.Content</p>
+					</div>
+					<div class="Post-Reaction-Block">
+						<div class="Likes">
+							<div class="Like-Icon">
+								<button class="Like-Button" @onclick="() => AddLike(Post.Key.Id)">
+									<img class="Like-Icon-Img" id="LikeIcon-@Post.Key.Id" src="@Post.Value" />
+								</button>
+							</div>
+							<div class="Likes-Numer">
+								<p class="Likes-Number-Paragraph">@Post.Key.NumberOfLikes</p>
+							</div>
+						</div>
+						<div class="Comments-Stats">
+							<button class="Comment-Icon" @onclick="() => AddCommentBlock(Post.Key.Id) ">
+								<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png" />
+							</button>
+							<div class="Comments-Number">
+								<p class="Comments-Number-Paragraph">@Post.Key.NumberOfComments</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			}
+		}
 	</div>
 }
 
@@ -42,6 +86,8 @@
 	[Parameter] public string UserId { get; set; }
 	private UserModel LoggedUser;
 	private UserModel User;
+	private List<PostModel> PostsList;
+	private Dictionary<PostModel, string> PostsDict = new Dictionary<PostModel, string>();
 	private bool UserHaveFollow;
 	private bool CanFollow = true;
 	protected override async Task OnInitializedAsync()
@@ -54,14 +100,26 @@
 		}
 		if (CanFollow)
 		{
+			PostsList = await _PostGetter.GetPostsByCreatorId(UserId);
 			await CheckFollow();
 			if (UserHaveFollow)
 			{
-				await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
+				await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
 			}
 			else
 			{
-				await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "Follow");
+				await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "Follow");
+			}
+		}
+		foreach (var Post in PostsList)
+		{
+			if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
+			{
+				PostsDict[Post] = "/Icons/Like-Icon2.png";
+			}
+			else
+			{
+				PostsDict[Post] = "/Icons/Like-Icon1.png";
 			}
 		}
 	}
@@ -71,16 +129,35 @@
 		if (UserHaveFollow)
 		{
 			await _FollowService.RemoveFollow(LoggedUser.Id, UserId);
-			await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "Follow");
+			await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "Follow");
 		}
 		else
 		{
 			await _FollowService.AddFollow(LoggedUser.Id, UserId);
-			await JSRuntime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
+			await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "UnFollow");
 		}
 
 	}
+	private async Task AddLike(string PostId)
+	{
 
+		var Post = await _PostGetter.GetPostsById(PostId);
+		var like = await _LikeGetter.GetCurrentLikeModel(PostId, User.Id);
+		if (like == null)
+		{
+			await _LikeService.AddLikeModel(PostId, User.Id);
+			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon2.png");
+		}
+		else
+		{
+			await _LikeService.RemoveLikeModel(PostId, User.Id);
+			ChangeSrc("LikeIcon-" + PostId, "/Icons/Like-Icon1.png");
+		}
+	}
+	private void ChangeSrc(string ElementId, string NewSrc)
+	{
+		JSRunTime.InvokeVoidAsync("ChangePhoto", ElementId, NewSrc);
+	}
 	public async Task CheckFollow()
 	{
 		var Follow = await _FollowGetter.GetCurrentFollow(LoggedUser.Id, UserId);
@@ -93,5 +170,41 @@
 			UserHaveFollow = true;
 		}
 		StateHasChanged();
+	}
+	private async Task AddCommentBlock(string PostId)
+	{
+		await JSRunTime.InvokeVoidAsync("AddCommentBlock", PostId);
+		await AddComments(PostId);
+	}
+	private async Task AddComments(string PostId)
+	{
+		var Post = await _PostGetter.GetPostsById(PostId);
+		foreach (var Comment in Post.Comments)
+		{
+			await JSRunTime.InvokeVoidAsync("AddComment", PostId, Comment.Creator.UserName, AddBreakLines(Comment.Content));
+		}
+	}
+	private string AddBreakLines(string Message)
+	{
+		var MessageWithBreakLines = "";
+		StringBuilder OutPutText = new StringBuilder();
+		int Counter = 0;
+
+		foreach (char c in Message)
+		{
+			if (Counter >= 100)
+			{
+				OutPutText.Append("</br>");
+				Counter = 0;
+			}
+			OutPutText.Append(c);
+			Counter++;
+		}
+		MessageWithBreakLines = OutPutText.ToString();
+		return MessageWithBreakLines;
+	}
+	private void RedirectToPage(string Url)
+	{
+		Navigation.NavigateTo(Url, forceLoad: true);
 	}
 }
