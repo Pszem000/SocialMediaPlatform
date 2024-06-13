@@ -24,7 +24,7 @@
 		</div>
 		<div id="ImgAndUsername">
 			<img id="UserPhoto" src="@Receiver.ProfileImageSrc" />
-			<h3 id="Username-Chat">@Receiver.UserName</h3>
+			<h3 id="Username-Chat" @onclick='() => RedirectToPage($"/Profile/{ReciverIdForm}")'>@Receiver.UserName</h3>
 		</div>
 	</div>
 }

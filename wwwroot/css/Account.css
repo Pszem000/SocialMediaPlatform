@@ -1,7 +1,11 @@
-﻿* {
+﻿body {
     margin: 0px;
-    color: Window;
     text-align: center;
+    background-image: linear-gradient(rgb(77, 77, 77),rgb(51, 51, 51));
+    color:white;
+}
+*{
+    color:white;
 }
 
 #UserSettings, .Home-Form {
@@ -21,15 +25,12 @@
     width: 100%;
     height: 100vh;
     float: left;
-    padding-top: 50px;
     overflow: auto;
 }
-
-#UserSettings {
-    background-image: linear-gradient(rgb(77, 77, 77),rgb(51, 51, 51));
+#ButtonRedirect-Container {
+    margin:30px;
 }
-
-.Button {
+.Button, #Buttton-Redirect {
     background-color: rgb(64, 64, 64);
     border: 3px solid;
     border-color: rgb(115,115,115);
@@ -39,7 +40,6 @@
     text-align: center;
     float: left;
 }
-
 input[type="text"] {
     background-color: rgb(179, 179, 179);
     margin: 0px;

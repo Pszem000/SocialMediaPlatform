@@ -15,6 +15,9 @@
 @if (User != null)
 {
 	<PageTitle>Profile @User.UserName</PageTitle>
+	<div id="ButtonRedirect-Container">
+		<button id="Buttton-Redirect" @onclick="@(() => RedirectToPage("/"))">Main Page</button>
+	</div>
 	<div id="UserInfo">
 		<div id="UsernameAndPhoto-Container">
 			<img id="UserPhoto" src="@User.ProfileImageSrc" />
@@ -100,7 +103,6 @@
 		}
 		if (CanFollow)
 		{
-			PostsList = await _PostGetter.GetPostsByCreatorId(UserId);
 			await CheckFollow();
 			if (UserHaveFollow)
 			{
@@ -109,19 +111,24 @@
 			else
 			{
 				await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "Follow");
-			}
+			}		
 		}
-		foreach (var Post in PostsList)
+		PostsList = await _PostGetter.GetPostsByCreatorId(UserId);
+		if(PostsList != null)
 		{
-			if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
+			foreach (var Post in PostsList)
 			{
-				PostsDict[Post] = "/Icons/Like-Icon2.png";
-			}
-			else
-			{
-				PostsDict[Post] = "/Icons/Like-Icon1.png";
+				if (Post.Likes.Where(x => x.UserId == User.Id).Count() != 0)
+				{
+					PostsDict[Post] = "/Icons/Like-Icon2.png";
+				}
+				else
+				{
+					PostsDict[Post] = "/Icons/Like-Icon1.png";
+				}
 			}
 		}
+		
 	}
 	public async Task ChangeFollow()
 	{

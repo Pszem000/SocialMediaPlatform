@@ -59,6 +59,7 @@
     margin: 0.5%;
     display: table;
     float: left;
+    color:white;
 }
 
 ::-webkit-scrollbar {

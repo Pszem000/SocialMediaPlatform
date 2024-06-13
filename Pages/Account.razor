@@ -4,11 +4,16 @@
 @using SocialMediaPlatform.Services.Interfaces
 @inject IUserGetter _UserGetter
 @inject SignInManager<UserModel> _SignInManager
+@inject NavigationManager Navigation
 <link href="css/Account.css" rel="stylesheet">
 @if(LoggedUser != null)
 {
 
+
 <div id="UserSettings">
+		<div id="ButtonRedirect-Container">
+			<button id="Buttton-Redirect" @onclick="@(() => RedirectToPage("/"))">Main Page</button>
+		</div>
 	<h1>@LoggedUser.UserName</h1>
 	<form action="/Account/LogOut" method="get">
 		<button class="Button" @onclick="@(() => LogOut())">LogOut</button>
@@ -46,5 +51,9 @@
 	private async Task LogOut()
 	{
 		await _SignInManager.SignOutAsync();
+	}
+	private void RedirectToPage(string Url)
+	{
+		Navigation.NavigateTo(Url, forceLoad: true);
 	}
 }
