@@ -19,6 +19,7 @@
 <div id="MainPage-OtherThings">
 	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Account"))">Account</button>
 	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage("/Messenger"))">Messenger</button>
+	<button class="Button-Redirect" @onclick="@(() =>  RedirectToPage($"/Profile/{User.Id}"))">Profile</button>
 	<div id="LastetMessages">
 		<h2>Lastet messages</h2>
 		@if (UserList != null && UserList.Count != 0)

@@ -1,4 +1,5 @@
 ﻿@page "/Profile/{UserId}"
+@using Microsoft.AspNetCore.SignalR.Client
 @using SocialMediaPlatform.Models
 @using SocialMediaPlatform.Services.Interfaces
 @using System.Text
@@ -10,6 +11,7 @@
 @inject NavigationManager Navigation
 @inject IPostGetter _PostGetter;
 @inject ILikeService _LikeService;
+@implements IAsyncDisposable
 @inject ILikeGetter _LikeGetter;
 <link href="css/ProfileStyle.css" rel="stylesheet">
 @if (User != null)
@@ -93,6 +95,7 @@
 	private Dictionary<PostModel, string> PostsDict = new Dictionary<PostModel, string>();
 	private bool UserHaveFollow;
 	private bool CanFollow = true;
+	private HubConnection? _HubConnection;
 	protected override async Task OnInitializedAsync()
 	{
 		LoggedUser = await _UserGetter.GetLoggedUser();
@@ -111,7 +114,18 @@
 			else
 			{
 				await JSRunTime.InvokeVoidAsync("ChangeFollowButton", "Follow");
-			}		
+			}
+
+			_HubConnection = new HubConnectionBuilder()
+			.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+			{
+				options.Headers["UserId"] = User.Id;
+			})
+			.Build();
+
+			await _HubConnection.StartAsync();
+
+			await _HubConnection.InvokeAsync("JoinGroup", User.Id);
 		}
 		PostsList = await _PostGetter.GetPostsByCreatorId(UserId);
 		if(PostsList != null)
@@ -129,6 +143,13 @@
 			}
 		}
 		
+	}
+	public async ValueTask DisposeAsync()
+	{
+		if (_HubConnection != null)
+		{
+			await _HubConnection.DisposeAsync();
+		}
 	}
 	public async Task ChangeFollow()
 	{

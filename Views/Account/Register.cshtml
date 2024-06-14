@@ -5,6 +5,7 @@
 @model SocialMediaPlatform.Models.RegisterModel
 
 <main id="Register-Main">
+
     @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data", @class = "Form" }))
     {
         <div id="Register-Container">
@@ -38,11 +39,9 @@
            
         </div>
     }
-
-	
-	
 	<div class="RedirectDiv">
 		<h3>If you have account </h3>
 		@Html.ActionLink("LOGIN", "Login", "Account", null, new { @class = "Button-Redirect" })
 	</div>
+    <script src="~/JavaScript/RegisterScript.js"></script>
 </main>

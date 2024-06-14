@@ -81,7 +81,7 @@ input[type="text"], input[type="password"] {
 }
 .Register-ParagraphFiles {
     text-align: center;
-    width: 11%;
+    max-width: 11%;
     margin:20px;
 }
 
@@ -99,7 +99,7 @@ input[type="text"], input[type="password"] {
     border-radius: 5px;
     font-weight: bold;
     text-decoration:none;
- 
+    
    
 }
 

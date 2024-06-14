@@ -1,7 +1,8 @@
 ﻿* {
     margin: 0px;
     color: Window;
-    text-align:center;
+    text-align: center;
+    background: rgb(64, 64, 64);
 }
 
 #FrirendsOnline{
@@ -19,21 +20,12 @@
     overflow: auto;
 }
 
-#UserSettings {
-    background-image: linear-gradient(rgb(77, 77, 77),rgb(51, 51, 51));
-}
-
-#LastetMessages, #FrirendsOnline {
-    background-image: linear-gradient(rgb(64, 64, 64),rgb(38, 38, 38) );
-}
-
 .UserList-PhotoWithNotification {
     width: 40px;
     height: 40px;
     border-radius: 100%;
     float: left;
     border: 3px solid;
-    border-color: rgb(115,115,115);
 }
 
 
@@ -52,7 +44,6 @@
     padding-top: 50px;
     overflow: auto;
     height: 100vh;
-    background-image: linear-gradient(rgb(64, 64, 64),rgb(38, 38, 38) );
 }
 
 #ButtonSearch {
