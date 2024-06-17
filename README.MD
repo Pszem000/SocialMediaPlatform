@@ -1,6 +1,6 @@
-# MESSENGER 
+
 ## For what this application has been made?
-### This is an application for people who want to stay in touch with friend 
+### This is an application for people who want to stay in touch with friend and see what they doing
 #
 # Technology list
 ### - C#
@@ -19,15 +19,22 @@
 ### - Logining
 ### - Sending messages
 ### - Deleting messages
-### - Character limit
+### - Message character limit
 ### - Auto update online friends list
 ### - Lasted messages list
 ### - Send/Read messages status
-### - Password recovery by email
+### - Password recovering by email
 ### - Password changing by current password
 ### - Username changing by password
 ### - Messages are automatically saved in database
-
+### - Adding posts
+### - Giving and removing comments
+### - Commenting posts
+### - User profie
+### - Adding and changing BIO in profile
+### - Follwoing
+### - Follows and following counter
+### - Post displaying
 # Some screen shots
 
 ### Login
