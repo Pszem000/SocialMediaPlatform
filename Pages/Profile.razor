@@ -28,6 +28,10 @@
 		</div>
 		<div id="UserBio-Conatiner">
 			<p id="UserBio">@User.Bio</p>
+			@if(!CanFollow)
+			{
+				<img id="ChangeBioButton" src="~/Icons/EditIcon.png" @onclick="@(() => GenerateBIOForm(User.Bio))" />
+			}
 		</div>
 		<div id="Followers-Container">
 			<span id="Followers">Follower: @User.NumberOfFollowers</span>
@@ -234,5 +238,9 @@
 	private void RedirectToPage(string Url)
 	{
 		Navigation.NavigateTo(Url, forceLoad: true);
+	}
+	private async Task GenerateBIOForm(string UserBio)
+	{
+		await JSRunTime.InvokeVoidAsync("GenerateBIOForm", User.Bio,User.Id);
 	}
 }
