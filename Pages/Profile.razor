@@ -27,10 +27,14 @@
 	
 		</div>
 		<div id="UserBio-Conatiner">
+			<div id="UserBioContent-Container">
 			<p id="UserBio">@User.Bio</p>
+			</div>
 			@if(!CanFollow)
 			{
-				<img id="ChangeBioButton" src="~/Icons/EditIcon.png" @onclick="@(() => GenerateBIOForm(User.Bio))" />
+				<div id="ChangeBioButtonIcon-Container">
+				<img id="ChangeBioButtonIcon" src="/Icons/EditIcon.png" @onclick="@(() => GenerateBIOForm(User.Bio))" />
+				</div>
 			}
 		</div>
 		<div id="Followers-Container">
