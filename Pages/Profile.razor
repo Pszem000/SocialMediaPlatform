@@ -125,7 +125,7 @@
 			}
 
 			_HubConnection = new HubConnectionBuilder()
-			.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+			.WithUrl(Navigation.ToAbsoluteUri("/AppHub"), options =>
 			{
 				options.Headers["UserId"] = User.Id;
 			})

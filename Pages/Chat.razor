@@ -55,7 +55,7 @@
 		await GenerateMessages();
 		_HubConnection = new HubConnectionBuilder()
 
-		.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+		.WithUrl(Navigation.ToAbsoluteUri("/AppHub"), options =>
 		{
 			options.Headers["UserId"] = User.Id;
 		})
@@ -64,9 +64,9 @@
 
 		_HubConnection.On<string, string>("ReciveNotification", async (Message, MessageId) =>
 			{
-				AddMessageToViewWithImageId(AddBreakLines(Message), "ReciverMessages", Receiver.ProfileImageSrc, "ReciverImg", MessageId);
+				await AddMessageToViewWithImageId(AddBreakLines(Message), "ReciverMessages", Receiver.ProfileImageSrc, "ReciverImg", MessageId);
 
-				JSRuntime.InvokeVoidAsync("scrollToBottom");
+				await JSRuntime.InvokeVoidAsync("scrollToBottom");
 				await _HubConnection.InvokeAsync("ReadMessages", Receiver.Id);
 
 			});

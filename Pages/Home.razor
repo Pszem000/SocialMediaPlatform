@@ -126,7 +126,7 @@
 		{
 			UserList = await _UserGetter.GetUsers(LoggedUser.Id);
 			_HubConnection = new HubConnectionBuilder()
-			.WithUrl(Navigation.ToAbsoluteUri("/testhub"), options =>
+			.WithUrl(Navigation.ToAbsoluteUri("/AppHub"), options =>
 			{
 				options.Headers["UserId"] = LoggedUser.Id;
 			})

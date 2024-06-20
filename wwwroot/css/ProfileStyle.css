@@ -234,3 +234,10 @@ input[type="text"] {
     color:white;
     text-align:center;
 }
+#Follow-Button, #DirectMessage-Button {
+    width: 30%;
+    margin:10px;
+}
+#Buttons-Container{
+    width:20%;
+}
