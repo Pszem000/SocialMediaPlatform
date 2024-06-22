@@ -1,13 +1,22 @@
-﻿<head>
+﻿@model SocialMediaPlatform.Models.LoginModel
+@using System.Configuration
+@inject IConfiguration Configuration
+@{
+	string PublicKey = Configuration.GetValue<string>("AppSettings:SiteKey");
+}
+<head>
 	<link href="~/css/LoginAndRegister.css" rel="stylesheet" />
 	<title>Log In</title>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
-@model SocialMediaPlatform.Models.LoginModel
 <main id="Login-Main">
 <div id="LoginAndRedirect-Container">
 	@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "Form" }))
 	{
-	
+		<div class="form-group">
+			<div class="g-recaptcha" data-sitekey="@PublicKey"></div>
+        </div>
+		
 		<div id="Login-container">
 			@Html.ValidationSummary()
 				<div class="validation-errors">
@@ -19,7 +28,7 @@
 			<p class="Login-Paragraph"><span>Username</span> <br /> @Html.TextBoxFor(x => x.UserName, new { @class = "Login-Input" })</p>
 			<p class="Login-Paragraph"><span>Password</span> <br /> @Html.PasswordFor(x => x.Password, new { @class = "Login-Input" })</p>
 			<button id="Button-Login" type="submit">LOGIN</button>
-		
+			
 		</div>
 	}
 	<div class="RedirectDiv">
@@ -30,7 +39,6 @@
 		<h3>if you forgot password</h3>
 		@Html.ActionLink("CHANGE PASSWORD", "GetRecoveryCode", "Password", null, new { @class = "Button-Redirect" })
 	</div>
-
-
+		
 </div>
 </main> 

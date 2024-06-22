@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using reCAPTCHA.AspNetCore;
 using SocialMediaPlatform;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services;
 using SocialMediaPlatform.Services.Interfaces;
+using System.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +59,11 @@ builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
   .AddDefaultTokenProviders()
   .AddTokenProvider<DataProtectorTokenProvider<UserModel>>("TokenProvider");
 
+builder.Services.AddRecaptcha(options =>
+{
+	options.SiteKey = _AppSettings.ReCAPTCHA_PrivateKey;
+	options.SecretKey = _AppSettings.ReCAPTCHA_PrivateKey;
+});
 
 var app = builder.Build();
 

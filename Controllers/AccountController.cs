@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
+using reCAPTCHA.AspNetCore;
 using SocialMediaPlatform;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
@@ -20,10 +21,11 @@ namespace SocialMediaPlatform.Controllers
 		private readonly IRecoveryCodeGetter _RecoveryCodeGetter;
 		private readonly IRecoveryCodeGenerator _RecoveryCodeGenerator;
 		private readonly IEmailSender _EmailSender;
+		private readonly IRecaptchaService _RecaptchaService;
 		private readonly string DefaultImagePath;
 
 
-		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration)
+		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService)
 		{
 			_UserManager = UserManager;
 			_SignInManager = SignInManager;
@@ -34,6 +36,7 @@ namespace SocialMediaPlatform.Controllers
 			_RecoveryCodeGetter = RecoveryCodeGetter;
 			_RecoveryCodeGenerator = RecoveryCodeGenerator;
 			_EmailSender = EmailSender;
+			_RecaptchaService = RecaptchaService;
 			DefaultImagePath = Configuration.GetValue<string>("AppSettings:DefaultImagePath");
 		}
 		[HttpGet]
@@ -94,7 +97,8 @@ namespace SocialMediaPlatform.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel UserData)
 		{
-			if (ModelState.IsValid)
+			var Recaptcha = await _RecaptchaService.Validate(Request);
+			if (ModelState.IsValid && Recaptcha.success)
 			{
 				var Result = await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
 				if (Result.Succeeded)
