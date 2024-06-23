@@ -6,6 +6,7 @@ using SocialMediaPlatform;
 using SocialMediaPlatform.Models;
 using SocialMediaPlatform.Services.Interfaces;
 using System.Configuration;
+using System.Net;
 
 
 namespace SocialMediaPlatform.Controllers
@@ -97,8 +98,11 @@ namespace SocialMediaPlatform.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel UserData)
 		{
-			var Recaptcha = await _RecaptchaService.Validate(Request);
-			if (ModelState.IsValid && Recaptcha.success)
+
+			var recaptchaToken = Request.Form["recaptchaToken"];
+			var recaptchaResponse = await _RecaptchaService.Validate(recaptchaToken);
+
+			if (ModelState.IsValid && recaptchaResponse.success)
 			{
 				var Result = await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
 				if (Result.Succeeded)

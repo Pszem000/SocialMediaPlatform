@@ -3,20 +3,23 @@
 @inject IConfiguration Configuration
 @{
 	string PublicKey = Configuration.GetValue<string>("AppSettings:SiteKey");
+	Console.WriteLine(PublicKey);
 }
 <head>
 	<link href="~/css/LoginAndRegister.css" rel="stylesheet" />
 	<title>Log In</title>
-	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<script src=`http://www.google.com/recaptcha/api.js`></script>
 </head>
 <main id="Login-Main">
 <div id="LoginAndRedirect-Container">
-	@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "Form" }))
+	@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "Form",@id="LoginForm" }))
 	{
-		<div class="form-group">
-			<div class="g-recaptcha" data-sitekey="@PublicKey"></div>
-        </div>
-		
+
+
+			<div class="form-group">
+				<div class="g-recaptcha" data-sitekey="@PublicKey" data-callback="setRecaptchaToken"></div>
+				@Html.Hidden("recaptchaToken")
+			</div>
 		<div id="Login-container">
 			@Html.ValidationSummary()
 				<div class="validation-errors">
@@ -27,8 +30,8 @@
 				</div>
 			<p class="Login-Paragraph"><span>Username</span> <br /> @Html.TextBoxFor(x => x.UserName, new { @class = "Login-Input" })</p>
 			<p class="Login-Paragraph"><span>Password</span> <br /> @Html.PasswordFor(x => x.Password, new { @class = "Login-Input" })</p>
-			<button id="Button-Login" type="submit">LOGIN</button>
-			
+
+			<button type="submit" id="Button-Login">LOGIN</button>
 		</div>
 	}
 	<div class="RedirectDiv">
@@ -41,4 +44,10 @@
 	</div>
 		
 </div>
+	<script>
+		function setRecaptchaToken(token) {
+			document.getElementById("recaptchaToken").value = token;
+			document.getElementById("LoginForm").submit();
+		}
+	</script>
 </main> 

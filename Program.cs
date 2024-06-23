@@ -61,8 +61,8 @@ builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
 
 builder.Services.AddRecaptcha(options =>
 {
-	options.SiteKey = _AppSettings.ReCAPTCHA_PrivateKey;
-	options.SecretKey = _AppSettings.ReCAPTCHA_PrivateKey;
+	options.SiteKey = _AppSettings.ReCAPTCHA_SiteKey;
+	options.SecretKey = _AppSettings.ReCAPTCHA_SecretKey;
 });
 
 var app = builder.Build();
