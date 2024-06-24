@@ -1,15 +1,30 @@
-﻿<head>
+﻿@model SocialMediaPlatform.Models.RegisterModel
+@using System.Configuration
+@inject IConfiguration Configuration
+@{
+    string PublicKey = Configuration.GetValue<string>("AppSettings:ReCAPTCHA_SiteKey");
+
+}
+<head>
 	<link href="~/css/LoginAndRegister.css" rel="stylesheet" />
 	<title>Sign Up</title>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("recaptchaToken").value = token;
+            document.getElementById("RegisterForm").submit();
+        }
+    </script>
 </head>
-@model SocialMediaPlatform.Models.RegisterModel
-
 <main id="Register-Main">
 
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data", @class = "Form" }))
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data", @class = "Form", @id="RegisterForm" }))
     {
         <div id="Register-Container">
             @Html.ValidationSummary()
+            <div class="form-group">
+                <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+            </div>
             <div class="validation-errors">
                 @if (ViewBag.Error != null)
                 {
@@ -35,7 +50,7 @@
                 <input class="CustomFiles" type="file" id="CustomFiles" name="ProfileImage" />
                 <label id="CustomFile-Label" for="CustomFiles">Choose Photo</label>
             </p>
-            <button id="Button-Register" type="submit">SIGN UP</button>
+            <button class="g-recaptcha" data-sitekey="@PublicKey" data-callback="onSubmit" data-action="submit" id="Button-Register">SIGN UP</button>
            
         </div>
     }

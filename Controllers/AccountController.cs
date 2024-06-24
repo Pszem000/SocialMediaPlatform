@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
+using Newtonsoft.Json;
 using reCAPTCHA.AspNetCore;
 using SocialMediaPlatform;
 using SocialMediaPlatform.Models;
@@ -24,6 +25,7 @@ namespace SocialMediaPlatform.Controllers
 		private readonly IEmailSender _EmailSender;
 		private readonly IRecaptchaService _RecaptchaService;
 		private readonly string DefaultImagePath;
+		private readonly string SecretKey;
 
 
 		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService)
@@ -39,6 +41,7 @@ namespace SocialMediaPlatform.Controllers
 			_EmailSender = EmailSender;
 			_RecaptchaService = RecaptchaService;
 			DefaultImagePath = Configuration.GetValue<string>("AppSettings:DefaultImagePath");
+			SecretKey = Configuration.GetValue<string>("AppSettings:ReCAPTCHA_SecretKey");
 		}
 		[HttpGet]
 		public IActionResult Register()
@@ -46,11 +49,11 @@ namespace SocialMediaPlatform.Controllers
 			return View();
 		}
 		[HttpPost]
-		public async Task<IActionResult> Register(RegisterModel UserData, IFormFile? ProfileImage)
+		public async Task<IActionResult> Register(RegisterModel UserData, IFormFile? ProfileImage, string recaptchaToken)
 		{
 
-
-			if (ModelState.IsValid)
+            var CaptchaIsValid = await ValidateRecaptcha(recaptchaToken);
+            if (ModelState.IsValid && CaptchaIsValid)
 			{
 				var NewUser = new UserModel
 				{
@@ -96,13 +99,10 @@ namespace SocialMediaPlatform.Controllers
 			return View();
 		}
 		[HttpPost]
-		public async Task<IActionResult> Login(LoginModel UserData)
+		public async Task<IActionResult> Login(LoginModel UserData, string recaptchaToken)
 		{
-
-			var recaptchaToken = Request.Form["recaptchaToken"];
-			var recaptchaResponse = await _RecaptchaService.Validate(recaptchaToken);
-
-			if (ModelState.IsValid && recaptchaResponse.success)
+			var CaptchaIsValid = await ValidateRecaptcha(recaptchaToken);
+			if (ModelState.IsValid && CaptchaIsValid)
 			{
 				var Result = await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
 				if (Result.Succeeded)
@@ -123,7 +123,15 @@ namespace SocialMediaPlatform.Controllers
 			await _SignInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");
 		}
-	}
+		private async Task<bool> ValidateRecaptcha(string recaptchaToken)
+		{
+			var httpClient = new HttpClient();
+			var response = await httpClient.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={SecretKey}&response={recaptchaToken}", null);
+			var responseString = await response.Content.ReadAsStringAsync();
+			var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaResponse>(responseString);
+			return recaptchaResponse.success;
+		}
 
+	}
 }
 

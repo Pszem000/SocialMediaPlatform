@@ -2,52 +2,47 @@
 @using System.Configuration
 @inject IConfiguration Configuration
 @{
-	string PublicKey = Configuration.GetValue<string>("AppSettings:SiteKey");
-	Console.WriteLine(PublicKey);
+    string PublicKey = Configuration.GetValue<string>("AppSettings:ReCAPTCHA_SiteKey");
+  
 }
 <head>
-	<link href="~/css/LoginAndRegister.css" rel="stylesheet" />
-	<title>Log In</title>
-	<script src=`http://www.google.com/recaptcha/api.js`></script>
+    <link href="~/css/LoginAndRegister.css" rel="stylesheet" />
+    <title>Log In</title>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("recaptchaToken").value = token;
+            document.getElementById("LoginForm").submit();
+        }
+    </script>
 </head>
 <main id="Login-Main">
-<div id="LoginAndRedirect-Container">
-	@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "Form",@id="LoginForm" }))
-	{
-
-
-			<div class="form-group">
-				<div class="g-recaptcha" data-sitekey="@PublicKey" data-callback="setRecaptchaToken"></div>
-				@Html.Hidden("recaptchaToken")
-			</div>
-		<div id="Login-container">
-			@Html.ValidationSummary()
-				<div class="validation-errors">
-					@if (ViewBag.Error != null)
-					{
-						<p class="Error-Register">@ViewBag.Error</p>
-					}
-				</div>
-			<p class="Login-Paragraph"><span>Username</span> <br /> @Html.TextBoxFor(x => x.UserName, new { @class = "Login-Input" })</p>
-			<p class="Login-Paragraph"><span>Password</span> <br /> @Html.PasswordFor(x => x.Password, new { @class = "Login-Input" })</p>
-
-			<button type="submit" id="Button-Login">LOGIN</button>
-		</div>
-	}
-	<div class="RedirectDiv">
-		<h3>if you dont have account</h3>
-		@Html.ActionLink("SIGN UP", "Register", "Account", null, new { @class = "Button-Redirect" })
-	</div>
-	<div class="RedirectDiv">
-		<h3>if you forgot password</h3>
-		@Html.ActionLink("CHANGE PASSWORD", "GetRecoveryCode", "Password", null, new { @class = "Button-Redirect" })
-	</div>
-		
-</div>
-	<script>
-		function setRecaptchaToken(token) {
-			document.getElementById("recaptchaToken").value = token;
-			document.getElementById("LoginForm").submit();
-		}
-	</script>
-</main> 
+    <div id="LoginAndRedirect-Container">
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "Form", @id = "LoginForm" }))
+        {
+            <div id="Login-container">
+                <div class="form-group">
+                    <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+                </div>
+                @Html.ValidationSummary()
+                <div class="validation-errors">
+                    @if (ViewBag.Error != null)
+                    {
+                        <p class="Error-Register">@ViewBag.Error</p>
+                    }
+                </div>
+                <p class="Login-Paragraph"><span>Username</span> <br /> @Html.TextBoxFor(x => x.UserName, new { @class = "Login-Input" })</p>
+                <p class="Login-Paragraph"><span>Password</span> <br /> @Html.PasswordFor(x => x.Password, new { @class = "Login-Input" })</p>
+                <button class="g-recaptcha" data-sitekey="@PublicKey" data-callback="onSubmit" data-action="submit" id="Button-Login">LOGIN</button>
+            </div>
+        }
+        <div class="RedirectDiv">
+            <h3>If you don't have an account</h3>
+            @Html.ActionLink("SIGN UP", "Register", "Account", null, new { @class = "Button-Redirect" })
+        </div>
+        <div class="RedirectDiv">
+            <h3>If you forgot your password</h3>
+            @Html.ActionLink("CHANGE PASSWORD", "GetRecoveryCode", "Password", null, new { @class = "Button-Redirect" })
+        </div>
+    </div>
+</main>
