@@ -4,6 +4,7 @@
 @using SocialMediaPlatform.Services.Interfaces
 @using System.Text
 @attribute [Authorize]
+@implements IAsyncDisposable
 @inject IUserGetter _UserGetter;
 @inject IFollowGetter _FollowGetter;
 @inject IFollowService _FollowService;
@@ -11,8 +12,8 @@
 @inject NavigationManager Navigation
 @inject IPostGetter _PostGetter;
 @inject ILikeService _LikeService;
-@implements IAsyncDisposable
 @inject ILikeGetter _LikeGetter;
+@inject IPostsService _PostService;
 <link href="css/ProfileStyle.css" rel="stylesheet">
 @if (User != null)
 {
@@ -62,7 +63,10 @@
 							<img class="Creator-Img" src="@Post.Key.Creator.ProfileImageSrc">
 						</div>
 						<div class="Creator-Name-Block">
-							<p @onclick='() => RedirectToPage($"/Profile/{Post.Key.CreatorId}")'>@Post.Key.Creator.UserName</p>
+							<p @onclick='() => RedirectToPage($"/Profile/{Post.Key.CreatorId}")' class="Creator-Name">@Post.Key.Creator.UserName</p>
+						</div>
+						<div class="RemovePost-Container">
+							<button class="Remove-Button" @onclick="() => RemovePost(Post.Key.Id)"><img src="/Icons/delete.png" class="Remove-Icon" /></button>
 						</div>
 					</div>
 					<div class="Post-Contnet-Block">
@@ -80,7 +84,7 @@
 							</div>
 						</div>
 						<div class="Comments-Stats">
-							<button class="Comment-Icon" @onclick="() => AddCommentBlock(Post.Key.Id) ">
+							<button class="Comment-Icon" @onclick="() => AddCommentBlock(Post.Key.Id)">
 								<img class="Comment-Icon-Img" src="/Icons/Comment-Icon.png" />
 							</button>
 							<div class="Comments-Number">
@@ -150,7 +154,7 @@
 				}
 			}
 		}
-		
+
 	}
 	public async ValueTask DisposeAsync()
 	{
@@ -219,6 +223,11 @@
 		{
 			await JSRunTime.InvokeVoidAsync("AddComment", PostId, Comment.Creator.UserName, AddBreakLines(Comment.Content));
 		}
+	}
+	private async Task RemovePost(string PostId)
+	{
+		await _PostService.RemovePost(PostId);
+		await JSRunTime.InvokeVoidAsync("RemovePost", PostId);
 	}
 	private string AddBreakLines(string Message)
 	{

@@ -1,11 +1,10 @@
 ﻿function ChangeFollowButton(Value) {
     var button = document.getElementById("Follow-Button");
-    if (button)
-    {
+    if (button) {
         button.innerText = Value;
     }
 }
-function GenerateBIOForm(BIOContent,UserId) {
+function GenerateBIOForm(BIOContent, UserId) {
     var BIOContainer = document.getElementById("UserBio-Conatiner");
     var FormContainer = document.createElement("div");
     BIOContainer.appendChild(FormContainer);
@@ -36,9 +35,7 @@ function GenerateBIOForm(BIOContent,UserId) {
     FormContainer.append(InputBio);
     FormContainer.append(Button);
 }
-
-function RemoveInupt()
-{
+function RemoveInupt() {
     var InputBio = document.getElementById("InputBio");
     InputBio.remove();
     var BioParagarph = document.getElementById("UserBio");
@@ -47,4 +44,8 @@ function RemoveInupt()
     ChangeBioButtonIcon.hidden = false;
     var ChangeBioButton = document.getElementById("ChangeBioButton");
     ChangeBioButton.remove();
+}
+function RemovePost(PostId) {
+    var Post = document.getElementById(`Post-${PostId}`);
+    Post.remove();
 }
