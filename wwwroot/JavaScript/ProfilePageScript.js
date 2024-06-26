@@ -49,3 +49,15 @@ function RemovePost(PostId) {
     var Post = document.getElementById(`Post-${PostId}`);
     Post.remove();
 }
+function GenerateEditPostForm() {
+    var Paragraph = document.getElementById("Post-Content");
+    var ParagraphParent = Paragraph.parentNode;
+    var Input = document.createElement("Input");
+    ParagraphParent.appendChild(Input);
+    Input.value = Paragraph.value;
+    Input.type = "text";
+    Input.id = "InputEdit";
+    Input.maxLength = 200;
+    Paragraph.hidden = true;
+
+}

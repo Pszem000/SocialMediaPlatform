@@ -68,9 +68,12 @@
 						<div class="RemovePost-Container">
 							<button class="Remove-Button" @onclick="() => RemovePost(Post.Key.Id)"><img src="/Icons/delete.png" class="Remove-Icon" /></button>
 						</div>
+						<div class="EditPost-Container">
+							<button class="Edit-Button" @onclick="() => EditPostContnet()"><img src="/Icons/EditIcon.png" class="Edit-Icon" /></button>
+						</div>
 					</div>
 					<div class="Post-Contnet-Block">
-						<p class="Post-Content">@Post.Key.Content</p>
+						<p class="Post-Content" id="Post-Content">@Post.Key.Content</p>
 					</div>
 					<div class="Post-Reaction-Block">
 						<div class="Likes">
@@ -255,5 +258,9 @@
 	private async Task GenerateBIOForm(string UserBio)
 	{
 		await JSRunTime.InvokeVoidAsync("GenerateBIOForm", User.Bio,User.Id);
+	}
+	private async Task EditPostContnet()
+	{
+		await JSRunTime.InvokeVoidAsync("GenerateEditPostForm");
 	}
 }
