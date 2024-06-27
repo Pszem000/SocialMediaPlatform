@@ -8,9 +8,10 @@ namespace SocialMediaPlatform.Services
 	{
 		private readonly AppDbContext _Context;
 		private readonly IPostGetter _PostGetter;
-		public PostsService(AppDbContext Context)
+		public PostsService(AppDbContext Context, IPostGetter PostGetter)
 		{
 			_Context = Context;
+			_PostGetter = PostGetter;
 		}
 		public async Task AddPost(PostModel Post)
 		{
@@ -23,7 +24,7 @@ namespace SocialMediaPlatform.Services
 			_Context.Posts.Remove(Post);
 			await _Context.SaveChangesAsync();
 		}
-		public async Task EditPostContent(string PostId, string NewContnet)
+		public async Task EditPostContent(string NewContnet, string PostId)
 		{
 			var Post = await _PostGetter.GetPostsById(PostId);
 			Post.Content = NewContnet;

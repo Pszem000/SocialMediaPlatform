@@ -35,7 +35,7 @@ function GenerateBIOForm(BIOContent, UserId) {
     FormContainer.append(InputBio);
     FormContainer.append(Button);
 }
-function RemoveInupt() {
+function RemoveInuptBio() {
     var InputBio = document.getElementById("InputBio");
     InputBio.remove();
     var BioParagarph = document.getElementById("UserBio");
@@ -49,15 +49,47 @@ function RemovePost(PostId) {
     var Post = document.getElementById(`Post-${PostId}`);
     Post.remove();
 }
-function GenerateEditPostForm() {
-    var Paragraph = document.getElementById("Post-Content");
+function GenerateEditPostForm(Content, PostId) {
+    var Paragraph = document.getElementById(`PostContent-${PostId}`);
     var ParagraphParent = Paragraph.parentNode;
+    Paragraph.hidden = true;
+    var RemoveButton = document.getElementById(`RemoveButton-${PostId}`);
+    RemoveButton.hidden = true;
+    var EditButton = document.getElementById(`EditButton-${PostId}`);
+    EditButton.hidden = true;
     var Input = document.createElement("Input");
     ParagraphParent.appendChild(Input);
-    Input.value = Paragraph.value;
+    Input.value = Content;
     Input.type = "text";
     Input.id = "InputEdit";
     Input.maxLength = 200;
-    Paragraph.hidden = true;
-
+    var Button = document.createElement("button");
+    var ButtonParent = document.getElementById(`CreatorContainer-${PostId}`);
+    ButtonParent.appendChild(Button);
+    Button.id = "EditContent-Button";
+    Button.textContent = "Change content";
+    Button.onclick = function () {
+        var Input = document.getElementById("InputEdit");
+        if (Input != null) {
+            var Content = Input.value;
+            var Paragarph = document.getElementById(`PostContent-${PostId}`);
+            Paragarph.textContent = Content;
+            fetch(`/Post/ChangeContent?Content=${Content}&PostId=${PostId}`, {
+                method: "POST"
+            });
+            RemoveInuptContent(PostId);
+        }
+    }
+}
+function RemoveInuptContent(PostId) {
+    var Input = document.getElementById("InputEdit");
+    Input.remove();
+    var Paragraph = document.getElementById(`PostContent-${PostId}`);
+    Paragraph.hidden = false;
+    var RemoveButton = document.getElementById(`RemoveButton-${PostId}`);
+    RemoveButton.hidden = false;
+    var EditButton = document.getElementById(`EditButton-${PostId}`);
+    EditButton.hidden = false;
+    var ChangeContnetButton = document.getElementById("EditContent-Button");
+    ChangeContnetButton.remove();
 }

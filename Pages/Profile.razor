@@ -58,7 +58,7 @@
 			foreach (var Post in PostsDict)
 			{
 				<div class="Post" id="Post-@Post.Key.Id">
-					<div class="CreatorContainer">
+					<div class="CreatorContainer" id="CreatorContainer-@Post.Key.Id">
 						<div class="Creator-Img-Block">
 							<img class="Creator-Img" src="@Post.Key.Creator.ProfileImageSrc">
 						</div>
@@ -66,14 +66,14 @@
 							<p @onclick='() => RedirectToPage($"/Profile/{Post.Key.CreatorId}")' class="Creator-Name">@Post.Key.Creator.UserName</p>
 						</div>
 						<div class="RemovePost-Container">
-							<button class="Remove-Button" @onclick="() => RemovePost(Post.Key.Id)"><img src="/Icons/delete.png" class="Remove-Icon" /></button>
+							<button class="Remove-Button" id="RemoveButton-@Post.Key.Id" @onclick="() => RemovePost(Post.Key.Id)"><img src="/Icons/delete.png" class="Remove-Icon" /></button>
 						</div>
 						<div class="EditPost-Container">
-							<button class="Edit-Button" @onclick="() => EditPostContnet()"><img src="/Icons/EditIcon.png" class="Edit-Icon" /></button>
+							<button class="Edit-Button" id="EditButton-@Post.Key.Id" @onclick="() => EditPostContnet(Post.Key.Content,Post.Key.Id)"><img src="/Icons/EditIcon.png" class="Edit-Icon" /></button>
 						</div>
 					</div>
 					<div class="Post-Contnet-Block">
-						<p class="Post-Content" id="Post-Content">@Post.Key.Content</p>
+						<p class="Post-Content" id="PostContent-@Post.Key.Id">@Post.Key.Content</p>
 					</div>
 					<div class="Post-Reaction-Block">
 						<div class="Likes">
@@ -259,8 +259,8 @@
 	{
 		await JSRunTime.InvokeVoidAsync("GenerateBIOForm", User.Bio,User.Id);
 	}
-	private async Task EditPostContnet()
+	private async Task EditPostContnet(string Content,string PostId)
 	{
-		await JSRunTime.InvokeVoidAsync("GenerateEditPostForm");
+		await JSRunTime.InvokeVoidAsync("GenerateEditPostForm",Content,PostId);
 	}
 }
