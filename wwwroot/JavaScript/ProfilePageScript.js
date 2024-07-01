@@ -20,16 +20,14 @@ function GenerateBIOForm(BIOContent, UserId) {
     var Button = document.createElement("button");
     Button.id = "ChangeBioButton";
     Button.onclick = function () {
-        var BioInput = document.getElementById("textarea");
-        if (BioInput != null) {
-            var BioContent = BioInput.value;
-            var BioParagarph = document.getElementById("UserBio");
-            BioParagarph.textContent = BioContent;
-            fetch(`/Bio/ChangeBio?Bio=${BioContent}&UserId=${UserId}`, {
+        var BioInput = document.getElementById("InputBio"); 
+        var BioContent = BioInput.value;
+        var BioParagarph = document.getElementById("UserBio");
+        BioParagarph.textContent = BioContent;
+        fetch(`/Bio/ChangeBio?Bio=${BioContent}&UserId=${UserId}`, {
                 method: "POST"
-            });
-            RemoveInupt();
-        }
+        });
+        RemoveInuptBio();       
     }
     Button.textContent = "Change Bio";
     FormContainer.append(InputBio);
