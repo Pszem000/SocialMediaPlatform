@@ -36,6 +36,7 @@
 }
 .Creator-Img {
     width: 30px;
+    height:30px;
     border-radius:100%;
     border:none;
 }
@@ -69,13 +70,17 @@ input[type="text"] {
     color: white;
 }
 
-.Like-Icon-Img, .Comment-Icon-Img {
+.Like-Icon-Img {
     margin: 5px;
+    height: 20px;
+}
+.Comment-Icon-Img {
+    margin:0px;
     height: 20px;
 }
 #PostsBlock {
     overflow-y: auto;
-    max-height:100vh;
+    max-height: 100vh;
 }
 .Post {
     width: 50%;
@@ -160,7 +165,7 @@ input[type="text"] {
     width: 99%;
 }
 .Comment-Content, .Comment-CreatorName {
-    margin:10px;
+    margin:5px;
     text-align: left;
 
 }
@@ -171,8 +176,8 @@ input[type="text"] {
     align-items: center;
     text-align: center;
     max-height: 250px;
-    overflow: auto;
-
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
 .AddCommentButton {

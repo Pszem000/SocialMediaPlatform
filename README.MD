@@ -16,7 +16,7 @@
 ### - SignalR
 # Features
 ### - Creating account with profile image
-### - Logining
+### - Logining with ReCAPTCHA
 ### - Sending messages
 ### - Deleting messages
 ### - Message character limit
@@ -27,7 +27,7 @@
 ### - Password changing by current password
 ### - Username changing by password
 ### - Messages are automatically saved in database
-### - Adding posts
+### - Adding and Editing posts
 ### - Giving and removing comments
 ### - Commenting posts
 ### - User profie
@@ -37,13 +37,17 @@
 ### - Post displaying
 # Some screen shots
 
-### Login
-![image](https://github.com/Ciaparitto/Messenger/assets/93779771/89281c08-d18e-455c-950a-75149fdd8db1)
-### Sign Up
-![image](https://github.com/Ciaparitto/Messenger/assets/93779771/32eb4c22-db8e-4d22-a4e9-9e753b544651)
-### Change password 
-![image](https://github.com/Ciaparitto/Messenger/assets/93779771/1231e1cf-bd8e-4163-a62b-6616716487e1)
-### Home page
-![image](https://github.com/Ciaparitto/Messenger/assets/93779771/6d896083-bb33-46ee-ba05-f1cffc07c06d)
+### Messenger page
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/386fd2cf-7bd9-4812-aaad-da67608780e1)
 ### Chat page
-![image](https://github.com/Ciaparitto/Messenger/assets/93779771/a70395be-28a0-49a7-bc3d-cc84426bf188)
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/312a43a4-5ddc-4e39-a349-fcdc1fb6d379)
+### Profile Page
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/37f14369-5cbb-4bcb-99e1-0864c64a46cd)
+### Main Page
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/1e289a9e-9874-401c-b298-45b1f7c007dd)
+### Login
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/e32ba733-112a-4d89-a001-d1bf637f8d2e)
+### Sign Up
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/f8ce9143-9811-4e50-a020-3576bf104b18)
+### Change password 
+![image](https://github.com/Pszem000/SocialMediaPlatform/assets/93779771/0f0f3437-28e7-4302-9538-7f5a3a76b443)

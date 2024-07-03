@@ -59,6 +59,7 @@ namespace SocialMediaPlatform.Controllers
 				{
 					Email = UserData.EmailAdress,
 					UserName = UserData.UserName,
+					Bio = ""
 				};
 
 				if (_Context.Users.Where(User => User.Email == UserData.EmailAdress).ToList().Count != 0)

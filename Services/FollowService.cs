@@ -22,9 +22,9 @@ namespace SocialMediaPlatform.Services
 			};
 			await _Context.Follows.AddAsync(FollowModel);
 			var Follower = await _UserGetter.GetUserById(FollowerId);
-			Follower.NumberOfFollowers++;	
 			var Followed = await _UserGetter.GetUserById(FollowedId);
-			Followed.NumberOfFollowing++;
+			Follower.NumberOfFollowing++;
+			Followed.NumberOfFollowers++;
 			await _Context.SaveChangesAsync();
 		}
 		public async Task RemoveFollow(string FollowerId,string FollowedId)

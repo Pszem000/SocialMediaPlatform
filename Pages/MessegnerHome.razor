@@ -94,9 +94,8 @@
 		{
 			@foreach (var user in OnlineFriendsList)
 			{
-
 				<div class="UserList-User">
-					<img id="UserPhoto" class="UserList-Photo" src="@LoggedUser.ProfileImageSrc" />
+					<img id="UserPhoto" class="UserList-Photo" src="@user.ProfileImageSrc" />
 					<button class="UserList-Button" @onclick="@(() =>  RedirectToPage($"chat/{user.Id}"))">@user.UserName</button>
 				</div>
 			}
