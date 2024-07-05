@@ -36,6 +36,8 @@ builder.Services.AddScoped<ILikeService, LikeService>();
 builder.Services.AddScoped<IFollowGetter, FollowGetter>();
 builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IBioService, BioService>();
+builder.Services.AddScoped<ICommentSaver, CommentSaver>();
+builder.Services.AddScoped<IUsernameChanger, UsernameChanger>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
