@@ -26,10 +26,12 @@ namespace SocialMediaPlatform.Controllers
 		private readonly IRecaptchaService _RecaptchaService;
 		private readonly string DefaultImagePath;
 		private readonly string SecretKey;
+		private readonly IRegistserService _RegisterService;
 
 
-		public AccountController(IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService)
+		public AccountController(IEmailSender EmailSender, IRegistserService registserService, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService)
 		{
+			_RegisterService = registserService;
 			_UserManager = UserManager;
 			_SignInManager = SignInManager;
 			_Context = Context;
@@ -51,46 +53,9 @@ namespace SocialMediaPlatform.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterModel UserData, IFormFile? ProfileImage, string recaptchaToken)
 		{
-
-            var CaptchaIsValid = await ValidateRecaptcha(recaptchaToken);
-            if (ModelState.IsValid && CaptchaIsValid)
+			if (ModelState.IsValid)
 			{
-				var NewUser = new UserModel
-				{
-					Email = UserData.EmailAdress,
-					UserName = UserData.UserName,
-					Bio = ""
-				};
-
-				if (_Context.Users.Where(User => User.Email == UserData.EmailAdress).ToList().Count != 0)
-				{
-					ViewBag.Error = $"Email {UserData.EmailAdress} is already taken";
-					return View();
-				}
-
-				var Result = await _UserManager.CreateAsync(NewUser, UserData.Password);
-
-				if (Result.Succeeded)
-				{
-					if (ProfileImage != null && ProfileImage.Length > 0)
-					{
-						await _ImageSaver.SaveImage(ProfileImage, NewUser.Id);
-					}
-					else
-					{
-						NewUser.ProfileImageSrc = DefaultImagePath;
-						await _Context.SaveChangesAsync();
-					}
-
-					await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
-
-					return RedirectToAction("Index", "Home");
-				}
-				else
-				{
-					ViewBag.Error = Result.Errors.FirstOrDefault().Description;
-				}
-
+				ViewBag.Error = await _RegisterService.Register(UserData, ProfileImage, recaptchaToken);
 			}
 			return View();
 		}
@@ -123,14 +88,6 @@ namespace SocialMediaPlatform.Controllers
 		{
 			await _SignInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");
-		}
-		private async Task<bool> ValidateRecaptcha(string recaptchaToken)
-		{
-			var httpClient = new HttpClient();
-			var response = await httpClient.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={SecretKey}&response={recaptchaToken}", null);
-			var responseString = await response.Content.ReadAsStringAsync();
-			var recaptchaResponse = JsonConvert.DeserializeObject<RecaptchaResponse>(responseString);
-			return recaptchaResponse.success;
 		}
 
 	}

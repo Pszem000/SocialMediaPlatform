@@ -38,6 +38,8 @@ builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IBioService, BioService>();
 builder.Services.AddScoped<ICommentSaver, CommentSaver>();
 builder.Services.AddScoped<IUsernameChanger, UsernameChanger>();
+builder.Services.AddScoped<IRegistserService, RegisterService>();
+builder.Services.AddScoped<IRecaptchaValidator, RecaptchaValidator>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
