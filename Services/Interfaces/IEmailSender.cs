@@ -2,6 +2,6 @@
 {
 	public interface IEmailSender
 	{
-		public Task SendEmail(string Email, string RecoveryCode);
+		public Task SendEmail(string Email);
 	}
 }

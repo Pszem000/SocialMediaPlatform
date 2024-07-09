@@ -27,9 +27,9 @@ namespace SocialMediaPlatform.Controllers
 		private readonly string DefaultImagePath;
 		private readonly string SecretKey;
 		private readonly IRegistserService _RegisterService;
+		private readonly ILoginService _LoginService;
 
-
-		public AccountController(IEmailSender EmailSender, IRegistserService registserService, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService)
+		public AccountController(IEmailSender EmailSender, IRegistserService registserService, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, IUserService UserService, UserManager<UserModel> UserManager, SignInManager<UserModel> SignInManager, AppDbContext Context, IImageSaver ImageSaver, IUserGetter UserGetter, IConfiguration Configuration, IRecaptchaService RecaptchaService, ILoginService LoginService)
 		{
 			_RegisterService = registserService;
 			_UserManager = UserManager;
@@ -42,6 +42,7 @@ namespace SocialMediaPlatform.Controllers
 			_RecoveryCodeGenerator = RecoveryCodeGenerator;
 			_EmailSender = EmailSender;
 			_RecaptchaService = RecaptchaService;
+			_LoginService = LoginService;
 			DefaultImagePath = Configuration.GetValue<string>("AppSettings:DefaultImagePath");
 			SecretKey = Configuration.GetValue<string>("AppSettings:ReCAPTCHA_SecretKey");
 		}
@@ -56,6 +57,7 @@ namespace SocialMediaPlatform.Controllers
 			if (ModelState.IsValid)
 			{
 				ViewBag.Error = await _RegisterService.Register(UserData, ProfileImage, recaptchaToken);
+				return Redirect("/");
 			}
 			return View();
 		}
@@ -67,18 +69,10 @@ namespace SocialMediaPlatform.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel UserData, string recaptchaToken)
 		{
-			var CaptchaIsValid = await ValidateRecaptcha(recaptchaToken);
-			if (ModelState.IsValid && CaptchaIsValid)
+			if (ModelState.IsValid)
 			{
-				var Result = await _SignInManager.PasswordSignInAsync(UserData.UserName, UserData.Password, false, false);
-				if (Result.Succeeded)
-				{
-					return Redirect("/");
-				}
-				else
-				{
-					ViewBag.Error = "Username or password is wrong";
-				}
+				ViewBag.Error = await _LoginService.Login(UserData, recaptchaToken);
+				return Redirect("/");
 			}
 			return View();
 		}

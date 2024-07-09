@@ -16,8 +16,9 @@ namespace SocialMediaPlatform.Controllers
 		private readonly IRecoveryCodeGetter _RecoveryCodeGetter;
 		private readonly IRecoveryCodeGenerator _RecoveryCodeGenerator;
 		private readonly IEmailSender _EmailSender;
+		private readonly IPasswordService _PasswordService;
 
-		public PasswordController(IUserService UserService, IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, UserManager<UserModel> UserManager, AppDbContext Context, IUserGetter UserGetter)
+		public PasswordController(IUserService UserService, IEmailSender EmailSender, IRecoveryCodeGenerator RecoveryCodeGenerator, IRecoveryCodeGetter RecoveryCodeGetter, UserManager<UserModel> UserManager, AppDbContext Context, IUserGetter UserGetter, IPasswordService PasswordService)
 		{
 			_UserManager = UserManager;
 			_Context = Context;
@@ -26,6 +27,7 @@ namespace SocialMediaPlatform.Controllers
 			_RecoveryCodeGenerator = RecoveryCodeGenerator;
 			_EmailSender = EmailSender;
 			_UserService = UserService;
+			_PasswordService = PasswordService;
 		}
 		public IActionResult Index()
 		{
@@ -42,19 +44,8 @@ namespace SocialMediaPlatform.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-
-				var User = await _UserGetter.GetUserByEmail(EmailModel.Email);
-				if (User != null)
-				{
-					await _RecoveryCodeGenerator.ChangeRecoveryCode(User.Id);
-					var RecoveryCode = _RecoveryCodeGetter.GetRecoveryCode(User.Id);
-					await _EmailSender.SendEmail(EmailModel.Email, RecoveryCode);
-					return RedirectToAction("ChangePasswordByRecoveryCode", "Password", new { EmailModel.Email });
-				}
-				else
-				{
-					ViewBag.Error = $"User with email {EmailModel.Email} does not  exist";
-				}
+				await _EmailSender.SendEmail(EmailModel.Email);
+				return RedirectToAction("ChangePasswordByRecoveryCode", "Password", new { EmailModel.Email });
 			}
 			return View(EmailModel);
 		}
@@ -72,47 +63,15 @@ namespace SocialMediaPlatform.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				if (ChangePasswordModel.NewPassword == ChangePasswordModel.ConfirmPassword)
-				{
-					var User = await _UserGetter.GetUserByEmail(ChangePasswordModel.Email);
-
-					var UserRecoveryCode = _RecoveryCodeGetter.GetRecoveryCode(User.Id);
-
-					if (UserRecoveryCode == ChangePasswordModel.RecoveryCode)
-					{
-						await _UserService.ChangePassword(User, ChangePasswordModel.NewPassword);
-						return Redirect("/");
-					}
-					else
-					{
-						ViewBag.Error = "Recovery code is wrong";
-					}
-				}
-				else
-				{
-					ViewBag.Error = "Passwords are not the same";
-				}
+				ViewBag.Error = await _PasswordService.ChangePasswordByRecoveryCode(ChangePasswordModel);
 			}
 			return View(ChangePasswordModel);
 		}
 		[HttpPost]
 		public async Task<IActionResult> ChangePasswordByPassword(string CurrentPassword, string NewPassword, string UserId)
 		{
-			var User = await _UserGetter.GetUserById(UserId);
-			if (User != null)
-			{
-				if (await _UserManager.CheckPasswordAsync(User, CurrentPassword))
-				{
-					var Result = await _UserManager.ChangePasswordAsync(User, CurrentPassword, NewPassword);
-					if (Result.Succeeded)
-					{
-						await _Context.SaveChangesAsync();
-
-					}
-				}
-			}
+			await _PasswordService.ChangePasswordByPassword(CurrentPassword, NewPassword, UserId);
 			return Redirect("/Account");
-
 		}
 	}
 }
