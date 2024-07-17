@@ -63,12 +63,12 @@
 
 ::-webkit-scrollbar {
     width: 12px;
-    background-color: rgba(0,0,0,0);
+    background-color: rgb(64, 64, 64);
 }
 
 ::-webkit-scrollbar-thumb {
     width: 12px;
-    background-color: rgb(51,187,255);
+    background-color: rgb(54,54,54);
     border-radius: 15px;
 }
 

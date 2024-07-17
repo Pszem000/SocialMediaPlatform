@@ -59,7 +59,7 @@ function AddMessageToViewWithImageURL(message, ElementClassNameMess, Url, Elemen
 
     var imgElement = document.createElement("img");
     imgElement.src = Url;
-    imgElement.id = MessageId;
+    imgElement.id = "ImageMessage-" + MessageId;
     ImgContainer.className = ElementClassNameImg;
     imgElement.className = "photo";
 
@@ -78,7 +78,8 @@ function DeleteMessage(MessageId, MessageObj) {
     fetch(`/DeleteMessage/${MessageId}`);
     MessageObj.remove();
 }
-function ChangePhoto(PhotoId) {
-    var photo = document.getElementById(PhotoId);
+function ChangePhotoChat(PhotoId) {
+    var photo = document.getElementById("ImageMessage-" + PhotoId);
     photo.src = "/Icons/message-read.png";
+
 }

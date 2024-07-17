@@ -78,7 +78,7 @@
 				var UnReadMessages = MessageList.Where(x => x.ReciverId == Receiver.Id && x.IsRead == false).ToList();
 				foreach (var Message in UnReadMessages)
 				{
-					await JSRuntime.InvokeVoidAsync("ChangePhoto", Message.Id);
+					await JSRuntime.InvokeVoidAsync("ChangePhotoChat", Message.Id);
 					var CurrentMessage = await _Context.MessageList.FindAsync(Message.Id);
 					CurrentMessage.IsRead = true;
 					await _Context.SaveChangesAsync();

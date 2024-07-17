@@ -21,27 +21,27 @@ builder.Services.AddSignalR(options =>
 });
 
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IImageSaver, ImageSaver>();
-builder.Services.AddScoped<IMessageGetter, MessageGetter>();
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IUserGetter, UserGetter>();
-builder.Services.AddScoped<IRecoveryCodeGetter, RecoveryCodeGetter>();
-builder.Services.AddScoped<IRecoveryCodeGenerator, RecoveryCodeGenerator>();
-builder.Services.AddScoped<IPostsService, PostsService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IImageSaver, ImageSaver>();
+builder.Services.AddTransient<IMessageGetter, MessageGetter>();
+builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<IUserGetter, UserGetter>();
+builder.Services.AddTransient<IRecoveryCodeGetter, RecoveryCodeGetter>();
+builder.Services.AddTransient<IRecoveryCodeGenerator, RecoveryCodeGenerator>();
+builder.Services.AddTransient<IPostsService, PostsService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IPostGetter, PostGetter>();
-builder.Services.AddScoped<ILikeGetter, LikeGetter>();
-builder.Services.AddScoped<ILikeService, LikeService>();
-builder.Services.AddScoped<IFollowGetter, FollowGetter>();
-builder.Services.AddScoped<IFollowService, FollowService>();
-builder.Services.AddScoped<IBioService, BioService>();
-builder.Services.AddScoped<ICommentSaver, CommentSaver>();
-builder.Services.AddScoped<IUsernameChanger, UsernameChanger>();
-builder.Services.AddScoped<IRegistserService, RegisterService>();
-builder.Services.AddScoped<IRecaptchaValidator, RecaptchaValidator>();
-builder.Services.AddScoped<ILoginService, LoginSerivce>();
-builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddTransient<IPostGetter, PostGetter>();
+builder.Services.AddTransient<ILikeGetter, LikeGetter>();
+builder.Services.AddTransient<ILikeService, LikeService>();
+builder.Services.AddTransient<IFollowGetter, FollowGetter>();
+builder.Services.AddTransient<IFollowService, FollowService>();
+builder.Services.AddTransient<IBioService, BioService>();
+builder.Services.AddTransient<ICommentSaver, CommentSaver>();
+builder.Services.AddTransient<IUsernameChanger, UsernameChanger>();
+builder.Services.AddTransient<IRegistserService, RegisterService>();
+builder.Services.AddTransient<IRecaptchaValidator, RecaptchaValidator>();
+builder.Services.AddTransient<ILoginService, LoginSerivce>();
+builder.Services.AddTransient<IPasswordService, PasswordService>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

@@ -20,7 +20,7 @@ namespace SocialMediaPlatform
 
 		public DbSet<ImageModel> ImageList { get; set; }
 
-		public virtual DbSet<MessageModel> MessageList { get; set; }
+		public DbSet<MessageModel> MessageList { get; set; }
 		public DbSet<PostModel> Posts { get; set; }
 		public DbSet<LikeModel> LikeList { get; set; }
 		public DbSet<CommentModel> Comments { get; set; }
